@@ -1,16 +1,11 @@
 package ru.lspl.analyzer.rcp.model;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.text.DocumentEvent;
 
-import ru.lspl.analyzer.rcp.model.extractors.PlainTextExtractor;
-import ru.lspl.analyzer.rcp.model.extractors.TextExtractor;
 import ru.lspl.patterns.Pattern;
 import ru.lspl.patterns.PatternBuilder;
 import ru.lspl.patterns.PatternBuildingException;
@@ -20,7 +15,7 @@ import ru.lspl.text.TextConfig;
 /**
  * @author alno
  */
-public class Document extends org.eclipse.jface.text.Document {
+public class Document extends FileDocument {
 
 	private static final Text EMPTY_TEXT = Text.create( "" );
 
@@ -28,39 +23,19 @@ public class Document extends org.eclipse.jface.text.Document {
 
 	private boolean analysisNeeded = false;
 
-	/**
-	 * Конфиг парсера текста
-	 */
+	/** Конфиг парсера текста */
 	private TextConfig textConfig = new TextConfig();
 
-	/**
-	 * Имя сохраненного файла
-	 */
-	private String fileName = null;
-
-	/**
-	 * Проанализированный текст
-	 */
+	/** Проанализированный текст */
 	private Text analyzedText = EMPTY_TEXT;
 
-	/**
-	 * Построитель шаблонов, используемый при анализе
-	 */
+	/** Построитель шаблонов, используемый при анализе */
 	private PatternBuilder patternBuilder = PatternBuilder.create();
 
-	/**
-	 * Шаблоны, используемые при анализе
-	 */
+	/** Шаблоны, используемые при анализе */
 	private Pattern[] patterns = null;
 
-	/**
-	 * Подписчики событий
-	 */
-	private Collection<IAnalysisListener> listeners = new ArrayList<IAnalysisListener>();
-
-	public Document() {
-		super( "" );
-	}
+	private final Collection<IAnalysisListener> listeners = new ArrayList<IAnalysisListener>();
 
 	public Text getAnalyzedText() {
 		return analyzedText;
@@ -119,52 +94,12 @@ public class Document extends org.eclipse.jface.text.Document {
 		analysisNeeded();
 	}
 
-	public void load( String fileName ) throws IOException {
-		TextExtractor extractor = selectTextExtractor( fileName );
-
-		FileInputStream is = new FileInputStream( fileName );
-		String text = extractor.extractText( is );
-		is.close();
-
-		set( text );
-
-		this.fileName = extractor.isLossless() ? fileName : null;
-	}
-
-	public boolean hasFileName() {
-		return fileName != null;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName( String fileName ) {
-		this.fileName = fileName;
-	}
-
-	public void save( String fileName ) throws IOException {
-		FileOutputStream fo = new FileOutputStream( fileName );
-		fo.write( get().getBytes() );
-		fo.close();
-
-		this.fileName = fileName;
-	}
-
 	public void addAnalysisListener( IAnalysisListener listener ) {
 		listeners.add( listener );
 	}
 
 	public void removeAnalysisListener( IAnalysisListener listener ) {
 		listeners.remove( listener );
-	}
-
-	public void clear() {
-		set( "" );
-	}
-
-	protected TextExtractor selectTextExtractor( String fileName ) {
-		return new PlainTextExtractor();
 	}
 
 	@Override
