@@ -77,19 +77,23 @@ public class DocumentTextEditor extends TextEditor {
 	}
 
 	protected void registerMatchRangeAnnotationTypes( AnnotationPainter annotationPainter ) {
-		RGB base = new RGB( 80, 80, 0 );
+		RGB baseMax = new RGB( 80, 80, 0 );
+		RGB baseOne = new RGB( 255, 255, 160 );
 		Display display = Display.getDefault();
 
 		for ( int i = 1; i <= MatchRangeAnnotation.MAX_DEPTH; ++i ) {
 			annotationPainter.addHighlightAnnotationType( "ru.lspl.analyzer.match" + i );
-			annotationPainter.setAnnotationTypeColor( "ru.lspl.analyzer.match" + i, calcColor( base, display, i ) );
+			annotationPainter.setAnnotationTypeColor( "ru.lspl.analyzer.match" + i, calcColor( baseOne, baseMax, display, i ) );
 		}
 	}
 
-	private Color calcColor( RGB base, Display display, int i ) {
-		int r = base.red + (MatchRangeAnnotation.MAX_DEPTH - i) * (255 - base.red) / MatchRangeAnnotation.MAX_DEPTH;
-		int g = base.green + (MatchRangeAnnotation.MAX_DEPTH - i) * (255 - base.green) / MatchRangeAnnotation.MAX_DEPTH;
-		int b = base.blue + (MatchRangeAnnotation.MAX_DEPTH - i) * (255 - base.blue) / MatchRangeAnnotation.MAX_DEPTH;
+	private Color calcColor( RGB baseOne, RGB baseMax, Display display, int i ) {
+		int dist = MatchRangeAnnotation.MAX_DEPTH - i;
+		int maxDist = MatchRangeAnnotation.MAX_DEPTH - 1;
+
+		int r = baseMax.red + dist * (baseOne.red - baseMax.red) / maxDist;
+		int g = baseMax.green + dist * (baseOne.green - baseMax.green) / maxDist;
+		int b = baseMax.blue + dist * (baseOne.blue - baseMax.blue) / maxDist;
 
 		return new Color( display, new RGB( r, g, b ) );
 	}

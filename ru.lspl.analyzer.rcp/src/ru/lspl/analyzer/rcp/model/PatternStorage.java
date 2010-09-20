@@ -4,23 +4,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.IProgressService;
 
 import ru.lspl.patterns.Pattern;
 
 public class PatternStorage {
 
-	private final Shell shell;
-
-	public PatternStorage( Shell shell ) {
-		this.shell = shell;
-	}
-
 	public void load( Document document, String fileName ) throws FileNotFoundException {
+		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 		Scanner scanner = new Scanner( new File( fileName ) );
 
 		try {
@@ -32,12 +27,11 @@ public class PatternStorage {
 					continue;
 
 				try {
-					document.buildPattern( line );
-				} catch ( Throwable ex ) {
-					MessageBox mb = new MessageBox( shell, SWT.OK | SWT.ICON_ERROR );
-					mb.setText( "Ошибка компиляции шаблона" );
-					mb.setMessage( "Ошибка в шаблоне на строке " + i + ":\n\n" + ex.getMessage() );
-					mb.open();
+					progressService.run( false, false, document.createDefinePatternJob( line ) );
+				} catch ( InvocationTargetException e ) {
+					e.printStackTrace();
+				} catch ( InterruptedException e ) {
+					e.printStackTrace();
 				}
 
 				++i;
@@ -51,7 +45,7 @@ public class PatternStorage {
 		FileWriter fw = new FileWriter( fileName );
 
 		try {
-			for ( Pattern pattern : document.getPatternsArray() ) {
+			for ( Pattern pattern : document.getDefinedPatternArray() ) {
 				fw.append( "\n\n" );
 				fw.append( pattern.name );
 				fw.append( " = " );

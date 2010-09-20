@@ -45,7 +45,7 @@ public class DocumentAnnotationModel extends AnnotationModel implements IAnalysi
 	@Override
 	public void analysisComplete( Document doc ) {
 		removeAllAnnotations();
-		addMatchRangeAnnotations( document.getAnalyzedText().getMatches( this.selectedPatterns ) );
+		addMatchRangeAnnotations( document.getMatches( this.selectedPatterns ) );
 
 		fireModelChanged();
 	}

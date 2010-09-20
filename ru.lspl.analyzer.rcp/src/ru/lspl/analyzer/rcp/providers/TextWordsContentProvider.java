@@ -33,10 +33,10 @@ public class TextWordsContentProvider extends SimpleContentProvider implements I
 					words.add( t );
 
 			return words.toArray();
-		} else if ( obj instanceof Document ) {
+		} else if ( obj instanceof Document && ((Document) obj).getNodes() != null ) {
 			ArrayList<Object> nodes = new ArrayList<Object>();
 
-			for ( Node n : ((Document) obj).getAnalyzedText().nodes )
+			for ( Node n : ((Document) obj).getNodes() )
 				if ( hasChildren( n ) )
 					nodes.add( n );
 

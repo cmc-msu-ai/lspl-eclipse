@@ -1,12 +1,15 @@
 package ru.lspl.analyzer.rcp.views;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -24,12 +27,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
@@ -279,20 +283,36 @@ public class PatternsView extends AbstractDocumentViewPart {
 
 			@Override
 			public void widgetSelected( org.eclipse.swt.events.SelectionEvent e ) {
-				System.out.println( getDocument() );
 				if ( !isConnected() )
 					return;
 
-				try {
-					getDocument().buildPattern( definePatternSource.getText() );
-				} catch ( Throwable ex ) {
-					MessageBox mb = new MessageBox( getSite().getWorkbenchWindow().getShell(), SWT.OK | SWT.ICON_ERROR );
-					mb.setText( "Ошибка компиляции шаблона" );
-					mb.setMessage( ex.getMessage() );
-					mb.open();
-				}
+				final IRunnableWithProgress defineJob = getDocument().createDefinePatternJob( definePatternSource.getText() );
 
-				refresh();
+				try {
+					PlatformUI.getWorkbench().getProgressService().busyCursorWhile( new IRunnableWithProgress() {
+
+						@Override
+						public void run( IProgressMonitor monitor ) throws InvocationTargetException, InterruptedException {
+							defineJob.run( monitor );
+
+							Display.getDefault().asyncExec( new Runnable() {
+
+								@Override
+								public void run() {
+									refresh();
+								}
+
+							} );
+						}
+
+					} );
+				} catch ( InvocationTargetException e1 ) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch ( InterruptedException e1 ) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		} );
 	}

@@ -1,5 +1,7 @@
 package ru.lspl.analyzer.rcp.providers;
 
+import java.util.Collection;
+
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -33,8 +35,12 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 		case COLUMN_PARAMS:
 			break;
 		case COLUMN_MATCHES:
-			if ( obj instanceof Pattern && document != null && document.getAnalyzedText() != null ) // Возвращаем количество сопоставлений
-				return String.valueOf( document.getAnalyzedText().getMatches( (Pattern) obj ).size() );
+			if ( obj instanceof Pattern && document != null ) {// Возвращаем количество сопоставлений
+				Collection<?> matches = document.getMatches( (Pattern) obj );
+
+				if ( matches != null )
+					return String.valueOf( matches.size() );
+			}
 
 			if ( obj instanceof Alternative )
 				return "";

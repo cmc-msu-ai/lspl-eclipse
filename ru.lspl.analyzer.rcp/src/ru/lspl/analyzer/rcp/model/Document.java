@@ -1,14 +1,26 @@
 package ru.lspl.analyzer.rcp.model;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
 
 import ru.lspl.patterns.Pattern;
 import ru.lspl.patterns.PatternBuilder;
 import ru.lspl.patterns.PatternBuildingException;
+import ru.lspl.text.Match;
+import ru.lspl.text.Node;
 import ru.lspl.text.Text;
 import ru.lspl.text.TextConfig;
 
@@ -17,29 +29,21 @@ import ru.lspl.text.TextConfig;
  */
 public class Document extends FileDocument {
 
-	private static final Text EMPTY_TEXT = Text.create( "" );
-
 	public boolean autoAnalyze = false;
 
 	private boolean analysisNeeded = false;
 
-	/** Конфиг парсера текста */
 	private TextConfig textConfig = new TextConfig();
 
-	/** Проанализированный текст */
-	private Text analyzedText = EMPTY_TEXT;
-
-	/** Построитель шаблонов, используемый при анализе */
 	private PatternBuilder patternBuilder = PatternBuilder.create();
+	private Pattern[] definedPatterns = null;
 
-	/** Шаблоны, используемые при анализе */
-	private Pattern[] patterns = null;
+	private ReentrantLock updateLock = new ReentrantLock();
 
-	private final Collection<IAnalysisListener> listeners = new ArrayList<IAnalysisListener>();
+	private Text analyzedText = null;
+	private Set<Pattern> analyzedPatterns = new HashSet<Pattern>();
 
-	public Text getAnalyzedText() {
-		return analyzedText;
-	}
+	private final Collection<IAnalysisListener> analysisListeners = new ArrayList<IAnalysisListener>();
 
 	public TextConfig getTextConfig() {
 		return textConfig;
@@ -55,51 +59,150 @@ public class Document extends FileDocument {
 		return analysisNeeded;
 	}
 
-	public void analyze() {
-		analyzedText = Text.create( get(), textConfig );
+	public Pattern[] getDefinedPatternArray() {
+		if ( definedPatterns != null ) // Если шаблоны уже определены
+			return definedPatterns; // Возвращаем их
 
-		for ( Pattern pattern : getPatternsArray() )
-			analyzedText.getMatches( pattern ); // Обработать текст шаблоном
-
-		analysisNeeded = false;
-
-		for ( IAnalysisListener listener : listeners )
-			listener.analysisComplete( this );
-
-		fireAnalysisNeedChanged();
+		return (definedPatterns = patternBuilder.getDefinedPatternsArray());
 	}
 
-	public Pattern[] getPatternsArray() {
-		if ( patterns != null ) // Если шаблоны уже определены
-			return patterns; // Возвращаем их
-
-		return (patterns = patternBuilder.getDefinedPatternsArray());
-	}
-
-	public List<Pattern> getPatternList() {
+	public List<Pattern> getDefinedPatternList() {
 		return patternBuilder.definedPatterns;
 	}
 
-	public void buildPattern( String source ) throws PatternBuildingException {
-		patternBuilder.build( source );
-		patterns = null;
+	public List<Match> getMatches( Iterable<Pattern> patterns ) {
+		if ( analyzedText == null )
+			return null;
 
-		analysisNeeded();
+		List<Match> matches = new ArrayList<Match>();
+
+		for ( Pattern p : patterns )
+			matches.addAll( getMatches( p ) );
+
+		return matches;
+	}
+
+	public List<Match> getMatches( Pattern pattern ) {
+		if ( analyzedText != null && analyzedPatterns.contains( pattern ) )
+			return analyzedText.getMatches( pattern );
+
+		return null;
+	}
+
+	public List<Node> getNodes() {
+		return analyzedText == null ? null : analyzedText.getNodes();
+	}
+
+	public IRunnableWithProgress createDefinePatternJob( final String source ) {
+		return new IRunnableWithProgress() {
+
+			@Override
+			public void run( IProgressMonitor monitor ) throws InvocationTargetException, InterruptedException {
+				try {
+					buildPattern( source, monitor );
+				} catch ( PatternBuildingException e ) {
+					MessageBox mb = new MessageBox( PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OK | SWT.ICON_ERROR );
+					mb.setText( "Ошибка компиляции шаблона" );
+					mb.setMessage( e.getMessage() );
+					mb.open();
+				}
+			}
+
+		};
+	}
+
+	public IRunnableWithProgress createAnalyzeJob() {
+		return new IRunnableWithProgress() {
+
+			@Override
+			public void run( IProgressMonitor monitor ) throws InvocationTargetException, InterruptedException {
+				analyze( monitor );
+			}
+
+		};
 	}
 
 	public void clearPatterns() {
 		patternBuilder = PatternBuilder.create();
-		patterns = null;
+		definedPatterns = null;
 
 		analysisNeeded();
 	}
 
 	public void addAnalysisListener( IAnalysisListener listener ) {
-		listeners.add( listener );
+		analysisListeners.add( listener );
 	}
 
 	public void removeAnalysisListener( IAnalysisListener listener ) {
-		listeners.remove( listener );
+		analysisListeners.remove( listener );
+	}
+
+	protected void analyze( IProgressMonitor monitor ) {
+		if ( !updateLock.tryLock() )
+			return;
+
+		try {
+			monitor.beginTask( "Анализ документа...", 1 );
+
+			analyzedText = Text.create( get(), textConfig );
+
+			for ( Pattern pattern : getDefinedPatternArray() )
+				analyzedText.getMatches( pattern ); // Обработать текст шаблоном
+
+			analyzedPatterns.addAll( getDefinedPatternList() );
+			analysisNeeded = false;
+
+			monitor.worked( 1 );
+
+			Display.getDefault().asyncExec( new Runnable() {
+
+				@Override
+				public void run() {
+					fireAnalysisComplete();
+				}
+
+			} );
+		} finally {
+			updateLock.unlock();
+		}
+	}
+
+	protected void buildPattern( String source, IProgressMonitor monitor ) throws PatternBuildingException {
+		updateLock.lock();
+
+		try {
+			monitor.beginTask( "Определение шаблона...", 1 );
+
+			patternBuilder.build( source );
+			definedPatterns = null;
+
+			monitor.worked( 1 );
+
+			Display.getDefault().asyncExec( new Runnable() {
+
+				@Override
+				public void run() {
+					analysisNeeded();
+				}
+			} );
+		} finally {
+			updateLock.unlock();
+		}
+	}
+
+	protected void analysisNeeded() {
+		if ( autoAnalyze ) { // Если стоит флаг автоанализа, анализируем текст			
+			try {
+				PlatformUI.getWorkbench().getProgressService().busyCursorWhile( createAnalyzeJob() );
+			} catch ( InvocationTargetException e ) {
+				e.printStackTrace();
+			} catch ( InterruptedException e ) {
+				e.printStackTrace();
+			}
+		} else if ( !analysisNeeded ) {
+			analysisNeeded = true;
+			fireAnalysisNeedChanged();
+		}
 	}
 
 	@Override
@@ -109,18 +212,17 @@ public class Document extends FileDocument {
 		analysisNeeded();
 	}
 
-	protected void analysisNeeded() {
-		if ( autoAnalyze ) { // Если стоит флаг автоанализа, анализируем текст
-			analyze();
-		} else if ( !analysisNeeded ) {
-			analysisNeeded = true;
-			fireAnalysisNeedChanged();
-		}
+	protected void fireAnalysisComplete() {
+		for ( IAnalysisListener listener : analysisListeners )
+			listener.analysisComplete( Document.this );
+
+		for ( IAnalysisListener listener : analysisListeners )
+			listener.analisysNeedChanged( Document.this ); // Извещаем подписчиков об анализе документа
 	}
 
 	protected void fireAnalysisNeedChanged() {
-		for ( IAnalysisListener listener : listeners )
-			listener.analisysNeedChanged( this ); // Извещаем подписчиков об анализе документа
+		for ( IAnalysisListener listener : analysisListeners )
+			listener.analisysNeedChanged( Document.this ); // Извещаем подписчиков об анализе документа
 	}
 
 }
