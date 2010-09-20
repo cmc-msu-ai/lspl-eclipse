@@ -37,7 +37,7 @@ public class TextMatchesContentProvider extends SimpleContentProvider implements
 		}
 
 		if ( obj instanceof Document )
-			return document.getDefinedPatternArray();
+			return document.getPatternSet().getDefinedPatternArray();
 
 		return EMPTY_ARRAY;
 	}
@@ -62,7 +62,7 @@ public class TextMatchesContentProvider extends SimpleContentProvider implements
 		}
 
 		if ( obj instanceof Document )
-			return document.getDefinedPatternList().size() > 0;
+			return document.getPatternSet().getDefinedPatternList().size() > 0;
 
 		return false;
 	}

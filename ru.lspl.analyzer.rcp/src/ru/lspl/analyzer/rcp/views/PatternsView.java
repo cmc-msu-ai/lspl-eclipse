@@ -6,10 +6,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -27,7 +25,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -39,12 +36,13 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
 import ru.lspl.analyzer.rcp.model.Document;
 import ru.lspl.analyzer.rcp.model.IAnalysisListener;
+import ru.lspl.analyzer.rcp.model.IPatternListener;
 import ru.lspl.analyzer.rcp.providers.DefinedPatternsContentProvider;
 import ru.lspl.analyzer.rcp.providers.PatternLabelProvider;
 import ru.lspl.patterns.Alternative;
 import ru.lspl.patterns.Pattern;
 
-public class PatternsView extends AbstractDocumentViewPart {
+public class PatternsView extends AbstractDocumentViewPart implements IAnalysisListener, IPatternListener {
 
 	public static final String ID = "ru.lspl.analyzer.rcp.views.PatternsView";
 
@@ -62,20 +60,6 @@ public class PatternsView extends AbstractDocumentViewPart {
 	private final DefinedPatternsContentProvider patternContentProvider = new DefinedPatternsContentProvider();
 
 	private final Collection<IPatternsViewListener> patternViewListeners = new LinkedList<IPatternsViewListener>();
-
-	private final IAnalysisListener analysisListener = new IAnalysisListener() {
-
-		@Override
-		public void analisysNeedChanged( Document doc ) {
-			patternsViewer.refresh();
-		}
-
-		@Override
-		public void analysisComplete( Document doc ) {
-			patternsViewer.refresh();
-		}
-
-	};
 
 	public void refresh() {
 		patternsViewer.refresh();
@@ -104,12 +88,14 @@ public class PatternsView extends AbstractDocumentViewPart {
 
 		patternsViewer.getControl().getParent().setEnabled( true );
 
-		document.addAnalysisListener( analysisListener );
+		document.addAnalysisListener( this );
+		document.getPatternSet().addPatternListener( this );
 	}
 
 	@Override
 	public void disconnect() {
-		getDocument().removeAnalysisListener( analysisListener );
+		getDocument().removeAnalysisListener( this );
+		getDocument().getPatternSet().removePatternListener( this );
 
 		if ( !patternsViewer.getControl().isDisposed() ) {
 			patternsViewer.getControl().getParent().setEnabled( false );
@@ -286,26 +272,8 @@ public class PatternsView extends AbstractDocumentViewPart {
 				if ( !isConnected() )
 					return;
 
-				final IRunnableWithProgress defineJob = getDocument().createDefinePatternJob( definePatternSource.getText() );
-
 				try {
-					PlatformUI.getWorkbench().getProgressService().busyCursorWhile( new IRunnableWithProgress() {
-
-						@Override
-						public void run( IProgressMonitor monitor ) throws InvocationTargetException, InterruptedException {
-							defineJob.run( monitor );
-
-							Display.getDefault().asyncExec( new Runnable() {
-
-								@Override
-								public void run() {
-									refresh();
-								}
-
-							} );
-						}
-
-					} );
+					PlatformUI.getWorkbench().getProgressService().busyCursorWhile( getDocument().getPatternSet().createDefinePatternJob( definePatternSource.getText() ) );
 				} catch ( InvocationTargetException e1 ) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -333,6 +301,21 @@ public class PatternsView extends AbstractDocumentViewPart {
 	@Override
 	public void setFocus() {
 		patternsViewer.getControl().setFocus();
+	}
+
+	@Override
+	public void analisysNeedChanged( Document doc ) {
+		patternsViewer.refresh();
+	}
+
+	@Override
+	public void analysisComplete( Document doc ) {
+		patternsViewer.refresh();
+	}
+
+	@Override
+	public void patternsUpdated( Document document ) {
+		patternsViewer.refresh();
 	}
 
 }

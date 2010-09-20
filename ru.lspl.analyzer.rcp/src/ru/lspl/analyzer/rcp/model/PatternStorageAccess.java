@@ -12,7 +12,7 @@ import org.eclipse.ui.progress.IProgressService;
 
 import ru.lspl.patterns.Pattern;
 
-public class PatternStorage {
+public class PatternStorageAccess {
 
 	public void load( Document document, String fileName ) throws FileNotFoundException {
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
@@ -27,7 +27,7 @@ public class PatternStorage {
 					continue;
 
 				try {
-					progressService.run( false, false, document.createDefinePatternJob( line ) );
+					progressService.busyCursorWhile( document.getPatternSet().createDefinePatternJob( line ) );
 				} catch ( InvocationTargetException e ) {
 					e.printStackTrace();
 				} catch ( InterruptedException e ) {
@@ -45,7 +45,7 @@ public class PatternStorage {
 		FileWriter fw = new FileWriter( fileName );
 
 		try {
-			for ( Pattern pattern : document.getDefinedPatternArray() ) {
+			for ( Pattern pattern : document.getPatternSet().getDefinedPatternArray() ) {
 				fw.append( "\n\n" );
 				fw.append( pattern.name );
 				fw.append( " = " );

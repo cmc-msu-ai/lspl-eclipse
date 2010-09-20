@@ -139,6 +139,25 @@
                   tooltip="Exits the application">
             </command>
          </menu>
+         <menu
+               id="patternsMenu"
+               label="Patterns">
+            <command
+                  commandId="ru.lspl.analyzer.rcp.clearPatterns"
+                  label="Clear Patterns"
+                  style="push">
+            </command>
+            <command
+                  commandId="ru.lspl.analyzer.rcp.importPatterns"
+                  label="Import Patterns..."
+                  style="push">
+            </command>
+            <command
+                  commandId="ru.lspl.analyzer.rcp.exportPatterns"
+                  label="Export Patterns..."
+                  style="push">
+            </command>
+         </menu>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -173,6 +192,21 @@
             defaultHandler="ru.lspl.analyzer.rcp.commands.OpenDocumentHandler"
             id="ru.lspl.analyzer.rcp.openDocument"
             name="Open Document">
+      </command>
+      <command
+            defaultHandler="ru.lspl.analyzer.rcp.commands.ClearPatternsHandler"
+            id="ru.lspl.analyzer.rcp.clearPatterns"
+            name="Clear Patterns">
+      </command>
+      <command
+            defaultHandler="ru.lspl.analyzer.rcp.commands.ExportPatternsHandler"
+            id="ru.lspl.analyzer.rcp.exportPatterns"
+            name="Export Patterns">
+      </command>
+      <command
+            defaultHandler="ru.lspl.analyzer.rcp.commands.ImportPatternsHandler"
+            id="ru.lspl.analyzer.rcp.importPatterns"
+            name="Import Patterns">
       </command>
    </extension>
    <extension

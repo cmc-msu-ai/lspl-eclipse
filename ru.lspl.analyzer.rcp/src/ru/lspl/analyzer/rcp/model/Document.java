@@ -11,14 +11,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.text.DocumentEvent;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 
 import ru.lspl.patterns.Pattern;
-import ru.lspl.patterns.PatternBuilder;
-import ru.lspl.patterns.PatternBuildingException;
 import ru.lspl.text.Match;
 import ru.lspl.text.Node;
 import ru.lspl.text.Text;
@@ -35,15 +31,14 @@ public class Document extends FileDocument {
 
 	private TextConfig textConfig = new TextConfig();
 
-	private PatternBuilder patternBuilder = PatternBuilder.create();
-	private Pattern[] definedPatterns = null;
-
 	private ReentrantLock updateLock = new ReentrantLock();
 
 	private Text analyzedText = null;
 	private Set<Pattern> analyzedPatterns = new HashSet<Pattern>();
 
 	private final Collection<IAnalysisListener> analysisListeners = new ArrayList<IAnalysisListener>();
+
+	private final PatternSet patternSet = new PatternSet( this, updateLock );
 
 	public TextConfig getTextConfig() {
 		return textConfig;
@@ -59,15 +54,8 @@ public class Document extends FileDocument {
 		return analysisNeeded;
 	}
 
-	public Pattern[] getDefinedPatternArray() {
-		if ( definedPatterns != null ) // Если шаблоны уже определены
-			return definedPatterns; // Возвращаем их
-
-		return (definedPatterns = patternBuilder.getDefinedPatternsArray());
-	}
-
-	public List<Pattern> getDefinedPatternList() {
-		return patternBuilder.definedPatterns;
+	public PatternSet getPatternSet() {
+		return patternSet;
 	}
 
 	public List<Match> getMatches( Iterable<Pattern> patterns ) {
@@ -93,24 +81,6 @@ public class Document extends FileDocument {
 		return analyzedText == null ? null : analyzedText.getNodes();
 	}
 
-	public IRunnableWithProgress createDefinePatternJob( final String source ) {
-		return new IRunnableWithProgress() {
-
-			@Override
-			public void run( IProgressMonitor monitor ) throws InvocationTargetException, InterruptedException {
-				try {
-					buildPattern( source, monitor );
-				} catch ( PatternBuildingException e ) {
-					MessageBox mb = new MessageBox( PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OK | SWT.ICON_ERROR );
-					mb.setText( "Ошибка компиляции шаблона" );
-					mb.setMessage( e.getMessage() );
-					mb.open();
-				}
-			}
-
-		};
-	}
-
 	public IRunnableWithProgress createAnalyzeJob() {
 		return new IRunnableWithProgress() {
 
@@ -120,13 +90,6 @@ public class Document extends FileDocument {
 			}
 
 		};
-	}
-
-	public void clearPatterns() {
-		patternBuilder = PatternBuilder.create();
-		definedPatterns = null;
-
-		analysisNeeded();
 	}
 
 	public void addAnalysisListener( IAnalysisListener listener ) {
@@ -146,10 +109,10 @@ public class Document extends FileDocument {
 
 			analyzedText = Text.create( get(), textConfig );
 
-			for ( Pattern pattern : getDefinedPatternArray() )
+			for ( Pattern pattern : patternSet.getDefinedPatternArray() )
 				analyzedText.getMatches( pattern ); // Обработать текст шаблоном
 
-			analyzedPatterns.addAll( getDefinedPatternList() );
+			analyzedPatterns.addAll( patternSet.getDefinedPatternList() );
 			analysisNeeded = false;
 
 			monitor.worked( 1 );
@@ -161,29 +124,6 @@ public class Document extends FileDocument {
 					fireAnalysisComplete();
 				}
 
-			} );
-		} finally {
-			updateLock.unlock();
-		}
-	}
-
-	protected void buildPattern( String source, IProgressMonitor monitor ) throws PatternBuildingException {
-		updateLock.lock();
-
-		try {
-			monitor.beginTask( "Определение шаблона...", 1 );
-
-			patternBuilder.build( source );
-			definedPatterns = null;
-
-			monitor.worked( 1 );
-
-			Display.getDefault().asyncExec( new Runnable() {
-
-				@Override
-				public void run() {
-					analysisNeeded();
-				}
 			} );
 		} finally {
 			updateLock.unlock();

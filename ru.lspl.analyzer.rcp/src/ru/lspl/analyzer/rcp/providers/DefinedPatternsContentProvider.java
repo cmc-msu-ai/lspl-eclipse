@@ -13,7 +13,7 @@ public class DefinedPatternsContentProvider extends SimpleContentProvider implem
 	@Override
 	public Object[] getChildren( Object obj ) {
 		if ( obj instanceof Document )
-			return ((Document) obj).getDefinedPatternList().toArray();
+			return ((Document) obj).getPatternSet().getDefinedPatternList().toArray();
 
 		if ( obj instanceof Pattern )
 			return ((Pattern) obj).getAlternatives().toArray();
