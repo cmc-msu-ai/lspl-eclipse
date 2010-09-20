@@ -5,13 +5,17 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 import ru.lspl.analyzer.rcp.model.Document;
+import ru.lspl.analyzer.rcp.model.DocumentProvider;
 
 public class DocumentEditorInput implements IEditorInput {
 
 	private final Document document;
 
+	private final DocumentProvider documentProvider;
+
 	public DocumentEditorInput( Document document ) {
 		this.document = document;
+		this.documentProvider = new DocumentProvider( this, document );
 	}
 
 	@Override
@@ -68,6 +72,10 @@ public class DocumentEditorInput implements IEditorInput {
 
 	public Document getDocument() {
 		return document;
+	}
+
+	public DocumentProvider getDocumentProvider() {
+		return documentProvider;
 	}
 
 }
