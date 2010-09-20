@@ -32,6 +32,12 @@
                visible="true">
          </view>
          <view
+               id="ru.lspl.analyzer.rcp.views.MatchesView"
+               minimized="false"
+               relationship="stack"
+               relative="ru.lspl.analyzer.rcp.views.WordsView">
+         </view>
+         <view
                id="ru.lspl.analyzer.rcp.views.PatternsView"
                minimized="false"
                ratio="0.7"
@@ -69,6 +75,14 @@
             icon="icons/sample.gif"
             id="ru.lspl.analyzer.rcp.views.WordsView"
             name="Words View">
+      </view>
+      <view
+            category="ru.lspl.analyzer.rcp"
+            class="ru.lspl.analyzer.rcp.views.MatchesView"
+            icon="icons/sample.gif"
+            id="ru.lspl.analyzer.rcp.views.MatchesView"
+            name="Matches View"
+            restorable="true">
       </view>
    </extension>
    <extension

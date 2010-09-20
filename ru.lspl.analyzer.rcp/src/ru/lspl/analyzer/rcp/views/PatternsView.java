@@ -104,10 +104,12 @@ public class PatternsView extends AbstractDocumentViewPart {
 	public void disconnect() {
 		getDocument().removeAnalysisListener( analysisListener );
 
-		patternsViewer.getControl().getParent().setEnabled( false );
+		if ( !patternsViewer.getControl().isDisposed() ) {
+			patternsViewer.getControl().getParent().setEnabled( false );
 
-		patternLabelProvider.setDocument( null );
-		patternsViewer.setInput( null );
+			patternLabelProvider.setDocument( null );
+			patternsViewer.setInput( null );
+		}
 
 		super.disconnect();
 	}
@@ -118,8 +120,6 @@ public class PatternsView extends AbstractDocumentViewPart {
 
 	@Override
 	public void createPartControl( Composite parent ) {
-		super.createPartControl( parent );
-
 		createPatternsViewer( parent );
 		createDefinitionControls( parent );
 
@@ -135,6 +135,8 @@ public class PatternsView extends AbstractDocumentViewPart {
 
 		fillLocalPullDown( bars.getMenuManager() );
 		fillLocalToolBar( bars.getToolBarManager() );
+
+		connectToEditors(); // Wait for editor activation
 	}
 
 	private void createPatternsViewer( Composite composite ) {

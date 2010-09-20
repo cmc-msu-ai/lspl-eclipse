@@ -1,15 +1,15 @@
 package ru.lspl.analyzer.rcp.views;
 
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
 import ru.lspl.analyzer.rcp.model.Document;
 
-public class AbstractDocumentViewPart extends ViewPart implements IPartListener {
+public abstract class AbstractDocumentViewPart extends ViewPart implements IPartListener {
 
 	private IEditorPart editor;
 	private Document document;
@@ -37,7 +37,7 @@ public class AbstractDocumentViewPart extends ViewPart implements IPartListener 
 
 	@Override
 	public void partActivated( IWorkbenchPart part ) {
-		if ( !(part instanceof IEditorPart) )
+		if ( part == null || !(part instanceof IEditorPart) )
 			return;
 
 		IEditorPart editorPart = (IEditorPart) part;
@@ -72,13 +72,32 @@ public class AbstractDocumentViewPart extends ViewPart implements IPartListener 
 	public void partOpened( IWorkbenchPart part ) {
 	}
 
-	@Override
-	public void createPartControl( Composite parent ) {
+	protected void connectToEditors() {
 		getSite().getPage().addPartListener( this );
+
+		partActivated( getSite().getPage().getActiveEditor() );
 	}
 
 	@Override
 	public void setFocus() {
+	}
+
+	@Override
+	public void dispose() {
+		getSite().getPage().removePartListener( this );
+
+		if ( isConnected() )
+			disconnect();
+
+		super.dispose();
+	}
+
+	protected IViewReference getViewReference( String id ) {
+		for ( IViewReference ref : getSite().getPage().getViewReferences() )
+			if ( ref.getId().equals( id ) )
+				return ref;
+
+		return null;
 	}
 
 }

@@ -1,7 +1,6 @@
 package ru.lspl.analyzer.rcp.providers;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 
 import ru.lspl.analyzer.rcp.model.Document;
 import ru.lspl.analyzer.rcp.utils.RangeMatchGroup;
@@ -11,15 +10,13 @@ import ru.lspl.patterns.Pattern;
 /**
  * @author alno
  */
-public class TextMatchesContentProvider implements ITreeContentProvider {
+public class TextMatchesContentProvider extends SimpleContentProvider implements ITreeContentProvider {
 
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 
 	private static final RangeMatchGroupper groupper = new RangeMatchGroupper();
 
 	private Document document;
-
-	private Pattern pattern = null;
 
 	@Override
 	public Object[] getChildren( Object obj ) {
@@ -32,14 +29,14 @@ public class TextMatchesContentProvider implements ITreeContentProvider {
 		if ( obj instanceof Pattern )
 			return groupper.groupMatches( document.getAnalyzedText().getMatches( (Pattern) obj ) ).toArray();
 
+		if ( obj instanceof Document )
+			return document.getPatternsArray();
+
 		return EMPTY_ARRAY;
 	}
 
 	@Override
 	public Object getParent( Object obj ) {
-		//if ( obj instanceof Match )
-		//	return ((Match) obj).pattern;
-
 		return null;
 	}
 
@@ -54,24 +51,15 @@ public class TextMatchesContentProvider implements ITreeContentProvider {
 		if ( obj instanceof Pattern )
 			return document.getAnalyzedText().getMatchCount( (Pattern) obj ) > 0;
 
+		if ( obj instanceof Document )
+			return document.getPatternList().size() > 0;
+
 		return false;
 	}
 
 	@Override
 	public Object[] getElements( Object input ) {
-		if ( document == null || input == null || pattern == null )
-			return EMPTY_ARRAY;
-
-		return groupper.groupMatches( document.getAnalyzedText().getMatches( pattern ) ).toArray();
-	}
-
-	@Override
-	public void dispose() {
-	}
-
-	@Override
-	public void inputChanged( Viewer viewer, Object arg1, Object arg2 ) {
-		document = (Document) arg2;
+		return getChildren( input );
 	}
 
 	public Document getDocument() {
@@ -80,14 +68,6 @@ public class TextMatchesContentProvider implements ITreeContentProvider {
 
 	public void setDocument( Document doc ) {
 		document = doc;
-	}
-
-	public Pattern getPattern() {
-		return pattern;
-	}
-
-	public void setPattern( Pattern selectedPattern ) {
-		this.pattern = selectedPattern;
 	}
 
 }

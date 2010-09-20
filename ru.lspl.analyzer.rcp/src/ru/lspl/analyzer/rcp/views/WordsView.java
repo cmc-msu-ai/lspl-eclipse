@@ -78,13 +78,15 @@ public class WordsView extends AbstractDocumentViewPart {
 	public void disconnect() {
 		getDocument().removeAnalysisListener( analysisListener );
 
+		if ( !wordsViewer.getControl().isDisposed() ) {
+			wordsViewer.setInput( null );
+		}
+
 		super.disconnect();
 	}
 
 	@Override
 	public void createPartControl( Composite parent ) {
-		super.createPartControl( parent );
-
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 1;
 		parent.setLayout( gridLayout );
@@ -96,6 +98,8 @@ public class WordsView extends AbstractDocumentViewPart {
 
 		fillLocalPullDown( bars.getMenuManager() );
 		fillLocalToolBar( bars.getToolBarManager() );
+
+		connectToEditors(); // Wait for editor activation
 	}
 
 	private void createSpeechPartViewer( Composite parent ) {
