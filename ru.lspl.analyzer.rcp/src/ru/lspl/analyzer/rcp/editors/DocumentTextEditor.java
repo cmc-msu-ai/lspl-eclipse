@@ -20,6 +20,10 @@ import ru.lspl.analyzer.rcp.model.annotations.MatchRangeAnnotation;
 
 public class DocumentTextEditor extends TextEditor {
 
+	public DocumentTextEditor() {
+		setSourceViewerConfiguration( new DocumentTextEditorConfiguration( getPreferenceStore() ) );
+	}
+
 	@Override
 	protected void setDocumentProvider( IEditorInput input ) {
 		setDocumentProvider( ((DocumentEditorInput) input).getDocumentProvider() );
@@ -39,12 +43,29 @@ public class DocumentTextEditor extends TextEditor {
 
 	@Override
 	protected ISourceViewer createSourceViewer( Composite parent, IVerticalRuler ruler, int styles ) {
-		SourceViewer sv = (SourceViewer) super.createSourceViewer( parent, ruler, styles );
+		final SourceViewer sv = (SourceViewer) super.createSourceViewer( parent, ruler, styles );
 
 		AnnotationPainter annotationPainter = createAnnotationPainter( sv );
 
 		sv.addPainter( annotationPainter );
 		sv.addTextPresentationListener( annotationPainter );
+		//		sv.getTextWidget().addMouseMoveListener( new MouseMoveListener() {
+		//			
+		//			@Override
+		//			public void mouseMove(MouseEvent ev) {
+		//				int offset = -1;
+		//				
+		//				try {
+		//					offset = sv.getTextWidget().getOffsetAtLocation(new Point(ev.x,ev.y));
+		//				} catch ( Throwable e ) {}
+		//				
+		//				DocumentEditorInput editorInput = (DocumentEditorInput) getEditorInput();				
+		//				DocumentAnnotationModel annotationModel = (DocumentAnnotationModel)editorInput.getDocumentProvider().getAnnotationModel( editorInput );
+		//				
+		//				//annotationModel.highlightAnnotations( offset );								
+		//			}
+		//			
+		//		});
 
 		return sv;
 	}

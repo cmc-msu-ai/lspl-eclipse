@@ -2,6 +2,7 @@ package ru.lspl.analyzer.rcp.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +20,7 @@ import ru.lspl.text.Match;
 import ru.lspl.text.Node;
 import ru.lspl.text.Text;
 import ru.lspl.text.TextConfig;
+import ru.lspl.text.Transition;
 
 /**
  * @author alno
@@ -73,6 +75,49 @@ public class Document extends FileDocument {
 	public List<Match> getMatches( Pattern pattern ) {
 		if ( analyzedText != null && analyzedPatterns.contains( pattern ) )
 			return analyzedText.getMatches( pattern );
+
+		return null;
+	}
+
+	public List<Match> findMatchesForPosition( int offset ) {
+		Node node = findLastNodeBefore( offset );
+
+		if ( node == null )
+			return Collections.emptyList();
+
+		List<Match> transitions = new ArrayList<Match>();
+
+		for ( Transition t : node.transitions )
+			if ( t.end.startOffset >= offset && t instanceof Match )
+				transitions.add( (Match) t );
+
+		return transitions;
+	}
+
+	public List<Transition> findTransitionsForPosition( int offset ) {
+		Node node = findLastNodeBefore( offset );
+
+		if ( node == null )
+			return Collections.emptyList();
+
+		List<Transition> transitions = new ArrayList<Transition>();
+
+		for ( Transition t : node.transitions )
+			if ( t.end.startOffset >= offset )
+				transitions.add( t );
+
+		return transitions;
+	}
+
+	private Node findLastNodeBefore( int offset ) {
+		if ( analyzedText != null ) {
+			for ( int i = analyzedText.getNodeCount() - 1; i >= 0; --i ) {
+				Node n = analyzedText.getNode( i );
+
+				if ( n.endOffset <= offset )
+					return n;
+			}
+		}
 
 		return null;
 	}
