@@ -8,27 +8,35 @@ import org.eclipse.ui.part.ViewPart;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
 import ru.lspl.analyzer.rcp.model.Document;
+import ru.lspl.analyzer.rcp.model.DocumentAnnotationModel;
 
 public abstract class AbstractDocumentViewPart extends ViewPart implements IPartListener {
 
 	private IEditorPart editor;
 	private Document document;
+	private DocumentAnnotationModel documentAnnotationModel;
 
 	public Document getDocument() {
 		return document;
 	}
 
-	public void connect( IEditorPart editor, Document document ) {
+	public DocumentAnnotationModel getDocumentAnnotationModel() {
+		return documentAnnotationModel;
+	}
+
+	public void connect( IEditorPart editor, DocumentEditorInput input ) {
 		if ( isConnected() )
 			disconnect();
 
 		this.editor = editor;
-		this.document = document;
+		this.document = input.getDocument();
+		this.documentAnnotationModel = (DocumentAnnotationModel) input.getDocumentProvider().getAnnotationModel( input );
 	}
 
 	public void disconnect() {
 		this.editor = null;
 		this.document = null;
+		this.documentAnnotationModel = null;
 	}
 
 	public boolean isConnected() {
@@ -51,7 +59,7 @@ public abstract class AbstractDocumentViewPart extends ViewPart implements IPart
 		if ( !(editorPart.getEditorInput() instanceof DocumentEditorInput) )
 			return;
 
-		connect( editorPart, ((DocumentEditorInput) editorPart.getEditorInput()).getDocument() );
+		connect( editorPart, (DocumentEditorInput) editorPart.getEditorInput() );
 	}
 
 	@Override

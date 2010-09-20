@@ -14,37 +14,40 @@ public class DocumentProvider extends AbstractDocumentProvider {
 
 	private final Document document;
 
-	private final DocumentEditorInput input;
+	private final DocumentEditorInput documentEditorInput;
+
+	private final DocumentAnnotationModel documentAnnotationModel;
 
 	public DocumentProvider( DocumentEditorInput input, Document document ) {
-		this.input = input;
+		this.documentEditorInput = input;
 		this.document = document;
+		this.documentAnnotationModel = new DocumentAnnotationModel();
 	}
 
 	@Override
 	public boolean isModifiable( Object element ) {
-		Assert.isTrue( input == element );
+		Assert.isTrue( documentEditorInput == element );
 
 		return true;
 	}
 
 	@Override
 	protected IDocument createDocument( Object element ) throws CoreException {
-		Assert.isTrue( input == element );
+		Assert.isTrue( documentEditorInput == element );
 
 		return document;
 	}
 
 	@Override
 	protected IAnnotationModel createAnnotationModel( Object element ) throws CoreException {
-		Assert.isTrue( input == element );
+		Assert.isTrue( documentEditorInput == element );
 
-		return null;
+		return documentAnnotationModel;
 	}
 
 	@Override
 	public boolean isDeleted( Object element ) {
-		Assert.isTrue( input == element );
+		Assert.isTrue( documentEditorInput == element );
 
 		return !document.hasFileName();
 	}

@@ -32,6 +32,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.DrillDownAdapter;
 
+import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
 import ru.lspl.analyzer.rcp.model.Document;
 import ru.lspl.analyzer.rcp.model.IAnalysisListener;
 import ru.lspl.analyzer.rcp.providers.DefinedPatternsContentProvider;
@@ -89,8 +90,10 @@ public class PatternsView extends AbstractDocumentViewPart {
 	}
 
 	@Override
-	public void connect( IEditorPart editor, Document document ) {
-		super.connect( editor, document );
+	public void connect( IEditorPart editor, DocumentEditorInput input ) {
+		super.connect( editor, input );
+
+		Document document = getDocument();
 
 		patternLabelProvider.setDocument( document );
 		patternsViewer.setInput( document );
@@ -223,6 +226,9 @@ public class PatternsView extends AbstractDocumentViewPart {
 					checkedPatterns.add( pattern );
 				else
 					checkedPatterns.remove( pattern );
+
+				if ( isConnected() )
+					getDocumentAnnotationModel().setSelectedPatterns( checkedPatterns );
 
 				for ( IPatternsViewListener listener : patternViewListeners )
 					listener.patternChecked( pattern, checked, checkedPatterns );

@@ -21,6 +21,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.part.DrillDownAdapter;
 
+import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
 import ru.lspl.analyzer.rcp.model.Document;
 import ru.lspl.analyzer.rcp.model.IAnalysisListener;
 import ru.lspl.analyzer.rcp.providers.TextMatchesContentProvider;
@@ -83,8 +84,10 @@ public class MatchesView extends AbstractDocumentViewPart {
 	}
 
 	@Override
-	public void connect( IEditorPart editor, Document document ) {
-		super.connect( editor, document );
+	public void connect( IEditorPart editor, DocumentEditorInput input ) {
+		super.connect( editor, input );
+
+		Document document = getDocument();
 
 		matchesContentProvider.setDocument( document );
 		matchesViewer.setInput( document );
