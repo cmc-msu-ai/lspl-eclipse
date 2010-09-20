@@ -1,6 +1,5 @@
 package ru.lspl.analyzer.rcp.views;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -30,7 +29,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
@@ -272,15 +270,7 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 				if ( !isConnected() )
 					return;
 
-				try {
-					PlatformUI.getWorkbench().getProgressService().busyCursorWhile( getDocument().getPatternSet().createDefinePatternJob( definePatternSource.getText() ) );
-				} catch ( InvocationTargetException e1 ) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch ( InterruptedException e1 ) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				getDocument().getPatternSet().createDefinePatternJob( definePatternSource.getText() ).schedule();
 			}
 		} );
 	}

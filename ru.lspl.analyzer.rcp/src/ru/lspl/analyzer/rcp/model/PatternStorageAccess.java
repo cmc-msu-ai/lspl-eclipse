@@ -4,18 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
-
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.IProgressService;
 
 import ru.lspl.patterns.Pattern;
 
 public class PatternStorageAccess {
 
 	public void load( Document document, String fileName ) throws FileNotFoundException {
-		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 		Scanner scanner = new Scanner( new File( fileName ) );
 
 		try {
@@ -26,13 +21,7 @@ public class PatternStorageAccess {
 				if ( line.startsWith( "//" ) || line.startsWith( "#" ) )
 					continue;
 
-				try {
-					progressService.busyCursorWhile( document.getPatternSet().createDefinePatternJob( line ) );
-				} catch ( InvocationTargetException e ) {
-					e.printStackTrace();
-				} catch ( InterruptedException e ) {
-					e.printStackTrace();
-				}
+				document.getPatternSet().createDefinePatternJob( line ).schedule();
 
 				++i;
 			}

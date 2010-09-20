@@ -1,18 +1,20 @@
 package ru.lspl.analyzer.rcp.model;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 
+import ru.lspl.analyzer.rcp.Activator;
 import ru.lspl.patterns.Pattern;
 import ru.lspl.patterns.PatternBuilder;
 import ru.lspl.patterns.PatternBuildingException;
@@ -59,18 +61,28 @@ public class PatternSet {
 		document.analysisNeeded();
 	}
 
-	public IRunnableWithProgress createDefinePatternJob( final String source ) {
-		return new IRunnableWithProgress() {
+	public Job createDefinePatternJob( final String source ) {
+		return new Job( "Defining pattern" ) {
 
 			@Override
-			public void run( IProgressMonitor monitor ) throws InvocationTargetException, InterruptedException {
+			public IStatus run( IProgressMonitor monitor ) {
 				try {
 					buildPattern( source, monitor );
-				} catch ( PatternBuildingException e ) {
-					MessageBox mb = new MessageBox( PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OK | SWT.ICON_ERROR );
-					mb.setText( "Ошибка компиляции шаблона" );
-					mb.setMessage( e.getMessage() );
-					mb.open();
+
+					return Status.OK_STATUS;
+				} catch ( final PatternBuildingException e ) {
+					Display.getDefault().asyncExec( new Runnable() {
+
+						@Override
+						public void run() {
+							MessageBox mb = new MessageBox( PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OK | SWT.ICON_ERROR );
+							mb.setText( "Ошибка компиляции шаблона" );
+							mb.setMessage( e.getMessage() );
+							mb.open();
+						}
+					} );
+
+					return new Status( Status.ERROR, Activator.PLUGIN_ID, "Error compiling pattern" );
 				}
 			}
 

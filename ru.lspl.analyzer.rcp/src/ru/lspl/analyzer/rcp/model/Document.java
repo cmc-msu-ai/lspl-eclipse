@@ -1,6 +1,5 @@
 package ru.lspl.analyzer.rcp.model;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,10 +8,11 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 
 import ru.lspl.patterns.Pattern;
 import ru.lspl.text.Match;
@@ -81,12 +81,14 @@ public class Document extends FileDocument {
 		return analyzedText == null ? null : analyzedText.getNodes();
 	}
 
-	public IRunnableWithProgress createAnalyzeJob() {
-		return new IRunnableWithProgress() {
+	public Job createAnalyzeJob() {
+		return new Job( "Analysing document" ) {
 
 			@Override
-			public void run( IProgressMonitor monitor ) throws InvocationTargetException, InterruptedException {
+			public IStatus run( IProgressMonitor monitor ) {
 				analyze( monitor );
+
+				return Status.OK_STATUS;
 			}
 
 		};
@@ -132,13 +134,7 @@ public class Document extends FileDocument {
 
 	protected void analysisNeeded() {
 		if ( autoAnalyze ) { // Если стоит флаг автоанализа, анализируем текст			
-			try {
-				PlatformUI.getWorkbench().getProgressService().busyCursorWhile( createAnalyzeJob() );
-			} catch ( InvocationTargetException e ) {
-				e.printStackTrace();
-			} catch ( InterruptedException e ) {
-				e.printStackTrace();
-			}
+			createAnalyzeJob().schedule();
 		} else if ( !analysisNeeded ) {
 			analysisNeeded = true;
 			fireAnalysisNeedChanged();
