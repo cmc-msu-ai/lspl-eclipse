@@ -10,7 +10,7 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -20,8 +20,10 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 
+import ru.lspl.analyzer.rcp.Activator;
 import ru.lspl.analyzer.rcp.model.DocumentAnnotationModel;
 import ru.lspl.analyzer.rcp.model.annotations.MatchRangeAnnotation;
+import ru.lspl.analyzer.rcp.preferences.PreferenceConstants;
 
 public class DocumentTextEditor extends TextEditor {
 
@@ -48,36 +50,48 @@ public class DocumentTextEditor extends TextEditor {
 
 	@Override
 	protected ISourceViewer createSourceViewer( Composite parent, IVerticalRuler ruler, int styles ) {
-		final SourceViewer sv = (SourceViewer) super.createSourceViewer( parent, ruler, styles );
+		String annotationHighlightEvent = Activator.getDefault().getPreferenceStore().getString( PreferenceConstants.ANNOTATION_HIGHLIGHT_EVENT );
+
+		SourceViewer sv = (SourceViewer) super.createSourceViewer( parent, ruler, styles );
 
 		AnnotationPainter annotationPainter = createAnnotationPainter( sv );
 
 		sv.addPainter( annotationPainter );
 		sv.addTextPresentationListener( annotationPainter );
-		sv.getTextWidget().addMouseMoveListener( new MouseMoveListener() {
 
-			@Override
-			public void mouseMove( MouseEvent e ) {
-				getAnnotationModel().showHoveredAnnotations( getMouseOffset( e ) );
-			}
+		System.out.println( annotationHighlightEvent );
+		if ( annotationHighlightEvent.equals( "MOVE" ) ) {
+			sv.getTextWidget().addMouseMoveListener( new MouseMoveListener() {
 
-		} );
-		sv.getTextWidget().addMouseTrackListener( new MouseTrackListener() {
+				@Override
+				public void mouseMove( MouseEvent e ) {
+					getAnnotationModel().showHoveredAnnotations( getMouseOffset( e ) );
+				}
 
-			@Override
-			public void mouseHover( MouseEvent e ) {
-			}
+			} );
+			sv.getTextWidget().addMouseTrackListener( new MouseTrackAdapter() {
 
-			@Override
-			public void mouseExit( MouseEvent e ) {
-				getAnnotationModel().showAllAnnotations();
-			}
+				@Override
+				public void mouseExit( MouseEvent e ) {
+					getAnnotationModel().showAllAnnotations();
+				}
 
-			@Override
-			public void mouseEnter( MouseEvent e ) {
-			}
+			} );
+		} else {
+			sv.getTextWidget().addMouseTrackListener( new MouseTrackAdapter() {
 
-		} );
+				@Override
+				public void mouseHover( MouseEvent e ) {
+					getAnnotationModel().showHoveredAnnotations( getMouseOffset( e ) );
+				}
+
+				@Override
+				public void mouseExit( MouseEvent e ) {
+					getAnnotationModel().showAllAnnotations();
+				}
+
+			} );
+		}
 
 		return sv;
 	}

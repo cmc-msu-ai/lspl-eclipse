@@ -98,7 +98,8 @@
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
                id="fileMenu"
-               label="File">
+               label="File"
+               mnemonic="F">
             <command
                   commandId="ru.lspl.analyzer.rcp.newDocument"
                   label="New Document"
@@ -141,7 +142,8 @@
          </menu>
          <menu
                id="patternsMenu"
-               label="Patterns">
+               label="Patterns"
+               mnemonic="P">
             <command
                   commandId="ru.lspl.analyzer.rcp.clearPatterns"
                   label="Clear Patterns"
@@ -155,6 +157,16 @@
             <command
                   commandId="ru.lspl.analyzer.rcp.exportPatterns"
                   label="Export Patterns..."
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               id="windowMenu"
+               label="Window"
+               mnemonic="W">
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Preferences"
                   style="push">
             </command>
          </menu>
@@ -246,6 +258,20 @@
             properties="analysisNeeded"
             type="org.eclipse.ui.IEditorPart">
       </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="ru.lspl.analyzer.rcp.preferences.DocumentEditorPreferencePage"
+            id="ru.lspl.analyzer.rcp.preferences.DocumentEditorPreferencePage"
+            name="Document Editor Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="ru.lspl.analyzer.rcp.preferences.PreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>
