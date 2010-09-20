@@ -29,6 +29,7 @@ public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 		try {
 			editor = new DocumentTextEditor();
 			int index = addPage( editor, getEditorInput() );
+			setPartName( editor.getTitle() );
 			setPageText( index, "Текст" );
 		} catch ( PartInitException e ) {
 			ErrorDialog.openError( getSite().getShell(), "Error creating nested text editor", null, e.getStatus() );
@@ -74,14 +75,21 @@ public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 
 	@Override
 	public void doSave( IProgressMonitor monitor ) {
-		getEditor( 0 ).doSave( monitor );
+		IEditorPart editor = getEditor( 0 );
+
+		editor.doSave( monitor );
+
+		setPartName( editor.getEditorInput().getName() );
+		setInput( editor.getEditorInput() );
 	}
 
 	@Override
 	public void doSaveAs() {
 		IEditorPart editor = getEditor( 0 );
+
 		editor.doSaveAs();
-		setPageText( 0, editor.getTitle() );
+
+		setPartName( editor.getEditorInput().getName() );
 		setInput( editor.getEditorInput() );
 	}
 

@@ -28,9 +28,21 @@ public class DocumentProvider extends AbstractDocumentProvider {
 	}
 
 	@Override
-	protected void doSaveDocument( IProgressMonitor monitor, Object element, IDocument document, boolean overwrite ) throws CoreException {
-		// TODO Auto-generated method stub
+	public boolean isDeleted( Object element ) {
+		return !((DocumentEditorInput) element).getDocument().hasFileName();
+	}
 
+	@Override
+	protected void doSaveDocument( IProgressMonitor monitor, Object element, IDocument document, boolean overwrite ) throws CoreException {
+		Document doc = (Document) document;
+
+		try {
+			doc.save( doc.getFileName() );
+		} catch ( Throwable e ) {
+			e.printStackTrace();
+
+			throw new CoreException( STATUS_ERROR );
+		}
 	}
 
 	@Override

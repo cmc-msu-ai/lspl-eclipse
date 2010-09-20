@@ -100,16 +100,41 @@
                id="fileMenu"
                label="File">
             <command
-                  commandId="ru.lspl.analyzer.rcp.commands.NewDocument"
+                  commandId="ru.lspl.analyzer.rcp.newDocument"
                   label="New Document"
                   style="push">
             </command>
+            <command
+                  commandId="ru.lspl.analyzer.rcp.openDocument"
+                  label="Open..."
+                  style="push">
+            </command>
             <separator
-                  name="ru.lspl.analyzer.rcp.fileMenuSeparator">
+                  name="ru.lspl.analyzer.rcp.fileMenuSeparator1"
+                  visible="true">
             </separator>
             <command
-                  commandId="ru.lspl.analyzer.rcp.commands.Exit"
-                  label="Quit"
+                  commandId="org.eclipse.ui.file.save"
+                  label="Save"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.saveAs"
+                  label="Save As.."
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.saveAll"
+                  label="Save All"
+                  style="push">
+            </command>
+            <separator
+                  name="ru.lspl.analyzer.rcp.fileMenuSeparator2"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.file.exit"
+                  label="Exit"
                   style="push"
                   tooltip="Exits the application">
             </command>
@@ -121,7 +146,7 @@
          <toolbar
                id="ru.lspl.analyzer.rcp.documentToolbar">
             <command
-                  commandId="ru.lspl.analyzer.rcp.commands.AnalyzeDocument"
+                  commandId="ru.lspl.analyzer.rcp.analyzeDocument"
                   label="Analyze"
                   style="push">
                <visibleWhen>
@@ -136,25 +161,25 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="ru.lspl.analyzer.rcp.commands.ExitHandler"
-            id="ru.lspl.analyzer.rcp.commands.Exit"
-            name="Exit">
-      </command>
-      <command
             defaultHandler="ru.lspl.analyzer.rcp.commands.NewDocumentCommand"
-            id="ru.lspl.analyzer.rcp.commands.NewDocument"
+            id="ru.lspl.analyzer.rcp.newDocument"
             name="New Document">
       </command>
       <command
-            id="ru.lspl.analyzer.rcp.commands.AnalyzeDocument"
+            id="ru.lspl.analyzer.rcp.analyzeDocument"
             name="Analyze Document">
+      </command>
+      <command
+            defaultHandler="ru.lspl.analyzer.rcp.commands.OpenDocumentHandler"
+            id="ru.lspl.analyzer.rcp.openDocument"
+            name="Open Document">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="ru.lspl.analyzer.rcp.commands.AnalyzeDocumentHandler"
-            commandId="ru.lspl.analyzer.rcp.commands.AnalyzeDocument">
+            commandId="ru.lspl.analyzer.rcp.analyzeDocument">
          <enabledWhen>
             <with
                   variable="activeEditor">

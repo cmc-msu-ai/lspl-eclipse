@@ -34,7 +34,7 @@ public class DocumentEditorInput implements IEditorInput {
 
 	@Override
 	public String getName() {
-		return document.getSavedFileName() == null ? "Новый документ" : document.getSavedFileName();
+		return document.getFileName() == null ? "Новый документ" : document.getFileName();
 	}
 
 	@Override

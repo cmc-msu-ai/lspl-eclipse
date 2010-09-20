@@ -36,7 +36,7 @@ public class Document extends org.eclipse.jface.text.Document {
 	/**
 	 * Имя сохраненного файла
 	 */
-	private String savedFileName = null;
+	private String fileName = null;
 
 	/**
 	 * Проанализированный текст
@@ -128,22 +128,19 @@ public class Document extends org.eclipse.jface.text.Document {
 
 		set( text );
 
-		savedFileName = extractor.isLossless() ? fileName : null;
+		this.fileName = extractor.isLossless() ? fileName : null;
 	}
 
-	public boolean hasSavedFileName() {
-		return savedFileName != null;
+	public boolean hasFileName() {
+		return fileName != null;
 	}
 
-	public String getSavedFileName() {
-		return savedFileName;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void save() throws IOException {
-		if ( savedFileName == null )
-			throw new IllegalStateException( "Text hasn't saved filename" );
-
-		save( savedFileName );
+	public void setFileName( String fileName ) {
+		this.fileName = fileName;
 	}
 
 	public void save( String fileName ) throws IOException {
@@ -151,7 +148,7 @@ public class Document extends org.eclipse.jface.text.Document {
 		fo.write( get().getBytes() );
 		fo.close();
 
-		savedFileName = fileName;
+		this.fileName = fileName;
 	}
 
 	public void addAnalysisListener( IAnalysisListener listener ) {
