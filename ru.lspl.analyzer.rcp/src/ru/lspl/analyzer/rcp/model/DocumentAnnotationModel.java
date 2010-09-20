@@ -26,8 +26,6 @@ public class DocumentAnnotationModel extends AnnotationModel implements IAnalysi
 	protected void connected() {
 		document = (Document) fDocument;
 		document.addAnalysisListener( this );
-
-		//	analysisComplete( document );
 	}
 
 	@Override
@@ -38,8 +36,6 @@ public class DocumentAnnotationModel extends AnnotationModel implements IAnalysi
 
 	@Override
 	public void analisysNeedChanged( Document doc ) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

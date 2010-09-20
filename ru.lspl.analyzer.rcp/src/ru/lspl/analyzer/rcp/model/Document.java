@@ -94,15 +94,7 @@ public class Document extends FileDocument {
 		};
 	}
 
-	public void addAnalysisListener( IAnalysisListener listener ) {
-		analysisListeners.add( listener );
-	}
-
-	public void removeAnalysisListener( IAnalysisListener listener ) {
-		analysisListeners.remove( listener );
-	}
-
-	protected void analyze( IProgressMonitor monitor ) {
+	public void analyze( IProgressMonitor monitor ) {
 		if ( !updateLock.tryLock() )
 			return;
 
@@ -118,18 +110,26 @@ public class Document extends FileDocument {
 			analysisNeeded = false;
 
 			monitor.worked( 1 );
-
-			Display.getDefault().asyncExec( new Runnable() {
-
-				@Override
-				public void run() {
-					fireAnalysisComplete();
-				}
-
-			} );
 		} finally {
 			updateLock.unlock();
 		}
+
+		Display.getDefault().asyncExec( new Runnable() {
+
+			@Override
+			public void run() {
+				fireAnalysisComplete();
+			}
+
+		} );
+	}
+
+	public void addAnalysisListener( IAnalysisListener listener ) {
+		analysisListeners.add( listener );
+	}
+
+	public void removeAnalysisListener( IAnalysisListener listener ) {
+		analysisListeners.remove( listener );
 	}
 
 	protected void analysisNeeded() {

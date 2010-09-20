@@ -67,7 +67,7 @@ public class PatternSet {
 			@Override
 			public IStatus run( IProgressMonitor monitor ) {
 				try {
-					buildPattern( source, monitor );
+					definePattern( source, monitor );
 
 					return Status.OK_STATUS;
 				} catch ( final PatternBuildingException e ) {
@@ -89,7 +89,7 @@ public class PatternSet {
 		};
 	}
 
-	protected void buildPattern( String source, IProgressMonitor monitor ) throws PatternBuildingException {
+	public void definePattern( String source, IProgressMonitor monitor ) throws PatternBuildingException {
 		updateLock.lock();
 
 		try {
@@ -99,19 +99,19 @@ public class PatternSet {
 			definedPatterns = null;
 
 			monitor.worked( 1 );
-
-			Display.getDefault().asyncExec( new Runnable() {
-
-				@Override
-				public void run() {
-					firePatternsUpdated();
-					document.analysisNeeded();
-				}
-
-			} );
 		} finally {
 			updateLock.unlock();
 		}
+
+		Display.getDefault().asyncExec( new Runnable() {
+
+			@Override
+			public void run() {
+				firePatternsUpdated();
+				document.analysisNeeded();
+			}
+
+		} );
 	}
 
 	protected void firePatternsUpdated() {
