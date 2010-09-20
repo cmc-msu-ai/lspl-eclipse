@@ -28,7 +28,6 @@ public class DocumentTextHover implements ITextHover, ITextHoverExtension {
 	public String getHoverInfo( ITextViewer textViewer, IRegion hoverRegion ) {
 		Document document = (Document) textViewer.getDocument();
 		List<Transition> transitions = document.findTransitionsForPosition( hoverRegion.getOffset() );
-		System.out.println( hoverRegion.getOffset() + " - " + transitions.size() );
 
 		StringBuilder b = new StringBuilder();
 

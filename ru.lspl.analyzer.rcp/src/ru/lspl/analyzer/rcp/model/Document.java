@@ -66,8 +66,12 @@ public class Document extends FileDocument {
 
 		List<Match> matches = new ArrayList<Match>();
 
-		for ( Pattern p : patterns )
-			matches.addAll( getMatches( p ) );
+		for ( Pattern p : patterns ) {
+			List<Match> pm = getMatches( p );
+
+			if ( pm != null )
+				matches.addAll( getMatches( p ) );
+		}
 
 		return matches;
 	}
@@ -80,46 +84,48 @@ public class Document extends FileDocument {
 	}
 
 	public List<Match> findMatchesForPosition( int offset ) {
-		Node node = findLastNodeBefore( offset );
+		List<Node> nodes = findNodesBefore( offset );
 
-		if ( node == null )
+		if ( nodes.isEmpty() )
 			return Collections.emptyList();
 
 		List<Match> transitions = new ArrayList<Match>();
 
-		for ( Transition t : node.transitions )
-			if ( t.end.startOffset >= offset && t instanceof Match )
-				transitions.add( (Match) t );
+		for ( Node n : nodes )
+			for ( Transition t : n.transitions )
+				if ( t.end.startOffset >= offset && t instanceof Match )
+					transitions.add( (Match) t );
 
 		return transitions;
 	}
 
 	public List<Transition> findTransitionsForPosition( int offset ) {
-		Node node = findLastNodeBefore( offset );
+		List<Node> nodes = findNodesBefore( offset );
 
-		if ( node == null )
+		if ( nodes.isEmpty() )
 			return Collections.emptyList();
 
 		List<Transition> transitions = new ArrayList<Transition>();
 
-		for ( Transition t : node.transitions )
-			if ( t.end.startOffset >= offset )
-				transitions.add( t );
+		for ( Node n : nodes )
+			for ( Transition t : n.transitions )
+				if ( t.end.startOffset >= offset )
+					transitions.add( t );
 
 		return transitions;
 	}
 
-	private Node findLastNodeBefore( int offset ) {
+	private List<Node> findNodesBefore( int offset ) {
 		if ( analyzedText != null ) {
 			for ( int i = analyzedText.getNodeCount() - 1; i >= 0; --i ) {
 				Node n = analyzedText.getNode( i );
 
 				if ( n.endOffset <= offset )
-					return n;
+					return analyzedText.nodes.subList( 0, i + 1 );
 			}
 		}
 
-		return null;
+		return Collections.emptyList();
 	}
 
 	public List<Node> getNodes() {

@@ -8,7 +8,11 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -16,6 +20,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 
+import ru.lspl.analyzer.rcp.model.DocumentAnnotationModel;
 import ru.lspl.analyzer.rcp.model.annotations.MatchRangeAnnotation;
 
 public class DocumentTextEditor extends TextEditor {
@@ -49,23 +54,30 @@ public class DocumentTextEditor extends TextEditor {
 
 		sv.addPainter( annotationPainter );
 		sv.addTextPresentationListener( annotationPainter );
-		//		sv.getTextWidget().addMouseMoveListener( new MouseMoveListener() {
-		//			
-		//			@Override
-		//			public void mouseMove(MouseEvent ev) {
-		//				int offset = -1;
-		//				
-		//				try {
-		//					offset = sv.getTextWidget().getOffsetAtLocation(new Point(ev.x,ev.y));
-		//				} catch ( Throwable e ) {}
-		//				
-		//				DocumentEditorInput editorInput = (DocumentEditorInput) getEditorInput();				
-		//				DocumentAnnotationModel annotationModel = (DocumentAnnotationModel)editorInput.getDocumentProvider().getAnnotationModel( editorInput );
-		//				
-		//				//annotationModel.highlightAnnotations( offset );								
-		//			}
-		//			
-		//		});
+		sv.getTextWidget().addMouseMoveListener( new MouseMoveListener() {
+
+			@Override
+			public void mouseMove( MouseEvent e ) {
+				getAnnotationModel().showHoveredAnnotations( getMouseOffset( e ) );
+			}
+
+		} );
+		sv.getTextWidget().addMouseTrackListener( new MouseTrackListener() {
+
+			@Override
+			public void mouseHover( MouseEvent e ) {
+			}
+
+			@Override
+			public void mouseExit( MouseEvent e ) {
+				getAnnotationModel().showAllAnnotations();
+			}
+
+			@Override
+			public void mouseEnter( MouseEvent e ) {
+			}
+
+		} );
 
 		return sv;
 	}
@@ -104,19 +116,30 @@ public class DocumentTextEditor extends TextEditor {
 
 		for ( int i = 1; i <= MatchRangeAnnotation.MAX_DEPTH; ++i ) {
 			annotationPainter.addHighlightAnnotationType( "ru.lspl.analyzer.match" + i );
-			annotationPainter.setAnnotationTypeColor( "ru.lspl.analyzer.match" + i, calcColor( baseOne, baseMax, display, i ) );
+			annotationPainter.setAnnotationTypeColor( "ru.lspl.analyzer.match" + i,
+					lerpColor( baseOne, baseMax, display, MatchRangeAnnotation.MAX_DEPTH - i, MatchRangeAnnotation.MAX_DEPTH - 1 ) );
 		}
 	}
 
-	private Color calcColor( RGB baseOne, RGB baseMax, Display display, int i ) {
-		int dist = MatchRangeAnnotation.MAX_DEPTH - i;
-		int maxDist = MatchRangeAnnotation.MAX_DEPTH - 1;
+	protected int getMouseOffset( MouseEvent e ) {
+		try {
+			return getSourceViewer().getTextWidget().getOffsetAtLocation( new Point( e.x, e.y ) );
+		} catch ( Throwable ex ) {
+			return -1;
+		}
+	}
 
-		int r = baseMax.red + dist * (baseOne.red - baseMax.red) / maxDist;
-		int g = baseMax.green + dist * (baseOne.green - baseMax.green) / maxDist;
-		int b = baseMax.blue + dist * (baseOne.blue - baseMax.blue) / maxDist;
+	protected DocumentAnnotationModel getAnnotationModel() {
+		DocumentEditorInput editorInput = (DocumentEditorInput) getEditorInput();
+		return (DocumentAnnotationModel) editorInput.getDocumentProvider().getAnnotationModel( editorInput );
+	}
 
-		return new Color( display, new RGB( r, g, b ) );
+	private Color lerpColor( RGB baseOne, RGB baseMax, Display display, int pos, int max ) {
+		int r = baseMax.red + pos * (baseOne.red - baseMax.red) / max;
+		int g = baseMax.green + pos * (baseOne.green - baseMax.green) / max;
+		int b = baseMax.blue + pos * (baseOne.blue - baseMax.blue) / max;
+
+		return new Color( display, r, g, b );
 	}
 
 }

@@ -41,8 +41,6 @@ public class MatchRangeBuilder {
 			}
 		}
 
-		System.out.println( ranges.size() );
-
 		return ranges;
 	}
 
