@@ -59,7 +59,6 @@ public class DocumentTextEditor extends TextEditor {
 		sv.addPainter( annotationPainter );
 		sv.addTextPresentationListener( annotationPainter );
 
-		System.out.println( annotationHighlightEvent );
 		if ( annotationHighlightEvent.equals( "MOVE" ) ) {
 			sv.getTextWidget().addMouseMoveListener( new MouseMoveListener() {
 

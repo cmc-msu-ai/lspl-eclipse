@@ -82,7 +82,7 @@ public class DocumentAnnotationModel extends AnnotationModel implements IAnalysi
 		if ( offset == lastHoverOffset )
 			return;
 
-		removeAllAnnotations();
+		removeAllAnnotations( false );
 		for ( MatchRange m : matchRangeBuilder.buildMatchRanges( document.findMatchesContainingPosition( offset ), MatchRangeAnnotation.MAX_DEPTH ) ) {
 			try {
 				addAnnotation( new MatchRangeAnnotation( m.depth ), new Position( m.start, m.end - m.start ), false );
@@ -95,7 +95,7 @@ public class DocumentAnnotationModel extends AnnotationModel implements IAnalysi
 	}
 
 	public void showAllAnnotations() {
-		removeAllAnnotations();
+		removeAllAnnotations( false );
 		for ( AnnotationWithPosition ap : annotations ) {
 			try {
 				addAnnotation( ap.annotation, ap.position, false );
