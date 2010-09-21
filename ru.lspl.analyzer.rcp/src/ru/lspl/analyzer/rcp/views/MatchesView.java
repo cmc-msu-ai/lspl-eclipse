@@ -44,12 +44,16 @@ public class MatchesView extends AbstractDocumentViewPart {
 	private final IAnalysisListener documentListener = new IAnalysisListener() {
 
 		@Override
-		public void analisysNeedChanged( Document doc ) {
+		public void analysisRequired( Document doc ) {
 			matchesViewer.refresh();
 		}
 
 		@Override
-		public void analysisComplete( Document doc ) {
+		public void analysisStarted( Document doc ) {
+		}
+
+		@Override
+		public void analysisCompleted( Document doc ) {
 			matchesViewer.refresh();
 		}
 

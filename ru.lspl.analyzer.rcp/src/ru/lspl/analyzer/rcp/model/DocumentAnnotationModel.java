@@ -44,11 +44,15 @@ public class DocumentAnnotationModel extends AnnotationModel implements IAnalysi
 	}
 
 	@Override
-	public void analisysNeedChanged( Document doc ) {
+	public void analysisRequired( Document doc ) {
 	}
 
 	@Override
-	public void analysisComplete( Document doc ) {
+	public void analysisStarted( Document doc ) {
+	}
+
+	@Override
+	public void analysisCompleted( Document doc ) {
 		// Building selected annotations
 		annotations.clear();
 		addMatchRangeAnnotations( document.getMatches( selectedPatterns ) );
@@ -66,7 +70,7 @@ public class DocumentAnnotationModel extends AnnotationModel implements IAnalysi
 	public void setSelectedPatterns( Set<Pattern> selectedPatterns ) {
 		this.selectedPatterns = selectedPatterns;
 
-		analysisComplete( document );
+		analysisCompleted( document );
 	}
 
 	private void addMatchRangeAnnotations( Collection<Match> matches ) {

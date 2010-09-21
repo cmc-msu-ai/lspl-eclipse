@@ -55,12 +55,18 @@ public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 		((DocumentEditorInput) editorInput).getDocument().addAnalysisListener( new IAnalysisListener() {
 
 			@Override
-			public void analisysNeedChanged( Document doc ) {
+			public void analysisRequired( Document doc ) {
 				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
 			}
 
 			@Override
-			public void analysisComplete( Document doc ) {
+			public void analysisStarted( Document doc ) {
+				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
+			}
+
+			@Override
+			public void analysisCompleted( Document doc ) {
+				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
 			}
 
 		} );

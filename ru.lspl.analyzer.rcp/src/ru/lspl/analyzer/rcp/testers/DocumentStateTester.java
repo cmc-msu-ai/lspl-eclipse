@@ -24,7 +24,7 @@ public class DocumentStateTester extends PropertyTester {
 		Document document = ((DocumentEditorInput) input).getDocument();
 
 		if ( property.equals( ANALYISIS_NEEDED ) )
-			return expectedValue.equals( document.isAnalysisNeeded() );
+			return expectedValue.equals( document.isAnalysisRequired() );
 
 		return false;
 	}

@@ -2,6 +2,7 @@ package ru.lspl.analyzer.rcp.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
@@ -14,7 +15,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 
-import ru.lspl.analyzer.rcp.Activator;
 import ru.lspl.patterns.Pattern;
 import ru.lspl.patterns.PatternBuilder;
 import ru.lspl.patterns.PatternBuildingException;
@@ -58,7 +58,6 @@ public class PatternSet {
 		definedPatterns = null;
 
 		firePatternsUpdated();
-		document.analysisNeeded();
 	}
 
 	public Job createDefinePatternJob( final String source ) {
@@ -66,10 +65,36 @@ public class PatternSet {
 
 			@Override
 			public IStatus run( IProgressMonitor monitor ) {
-				try {
-					definePattern( source, monitor );
+				definePatterns( Collections.singletonList( source ), monitor, true );
 
-					return Status.OK_STATUS;
+				return Status.OK_STATUS;
+			}
+
+		};
+	}
+
+	public Job createDefinePatternsJob( final Iterable<String> sources ) {
+		return new Job( "Defining patterns" ) {
+
+			@Override
+			public IStatus run( IProgressMonitor monitor ) {
+				definePatterns( sources, monitor, true );
+
+				return Status.OK_STATUS;
+			}
+
+		};
+	}
+
+	protected void definePatterns( Iterable<String> sources, IProgressMonitor monitor, boolean notifyUpdate ) {
+		updateLock.lock();
+
+		try {
+			monitor.beginTask( "Определение шаблона...", 1 );
+
+			for ( String source : sources ) {
+				try {
+					patternBuilder.build( source );
 				} catch ( final PatternBuildingException e ) {
 					Display.getDefault().asyncExec( new Runnable() {
 
@@ -80,22 +105,10 @@ public class PatternSet {
 							mb.setMessage( e.getMessage() );
 							mb.open();
 						}
-					} );
 
-					return new Status( Status.ERROR, Activator.PLUGIN_ID, "Error compiling pattern" );
+					} );
 				}
 			}
-
-		};
-	}
-
-	public void definePattern( String source, IProgressMonitor monitor ) throws PatternBuildingException {
-		updateLock.lock();
-
-		try {
-			monitor.beginTask( "Определение шаблона...", 1 );
-
-			patternBuilder.build( source );
 			definedPatterns = null;
 
 			monitor.worked( 1 );
@@ -103,20 +116,23 @@ public class PatternSet {
 			updateLock.unlock();
 		}
 
-		Display.getDefault().asyncExec( new Runnable() {
+		if ( notifyUpdate ) {
+			Display.getDefault().asyncExec( new Runnable() {
 
-			@Override
-			public void run() {
-				firePatternsUpdated();
-				document.analysisNeeded();
-			}
+				@Override
+				public void run() {
+					firePatternsUpdated();
+				}
 
-		} );
+			} );
+		}
 	}
 
 	protected void firePatternsUpdated() {
 		for ( IPatternListener listener : patternListeners )
 			listener.patternsUpdated( document ); // Извещаем подписчиков об анализе документа
+
+		document.firePatternsChanged();
 	}
 
 }

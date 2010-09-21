@@ -20,7 +20,6 @@ import ru.lspl.text.Match;
 import ru.lspl.text.MatchGroup;
 import ru.lspl.text.Node;
 import ru.lspl.text.Text;
-import ru.lspl.text.TextConfig;
 import ru.lspl.text.Transition;
 import ru.lspl.text.Word;
 
@@ -29,33 +28,45 @@ import ru.lspl.text.Word;
  */
 public class Document extends FileDocument {
 
-	public boolean autoAnalyze = false;
+	private final ReentrantLock updateLock = new ReentrantLock();
 
-	private boolean analysisNeeded = false;
-
-	private TextConfig textConfig = new TextConfig();
-
-	private ReentrantLock updateLock = new ReentrantLock();
+	private boolean configChanged = false;
+	private boolean textChanged = false;
+	private boolean patternsChanged = false;
 
 	private Text analyzedText = null;
 	private Set<Pattern> analyzedPatterns = new HashSet<Pattern>();
+	private DocumentConfig config = new DocumentConfig();
 
 	private final Collection<IAnalysisListener> analysisListeners = new ArrayList<IAnalysisListener>();
 
 	private final PatternSet patternSet = new PatternSet( this, updateLock );
 
-	public TextConfig getTextConfig() {
-		return textConfig;
+	public DocumentConfig getConfig() {
+		return config;
 	}
 
-	public void setTextConfig( TextConfig textConfig ) {
-		this.textConfig = textConfig;
+	public void setConfig( DocumentConfig config ) {
+		this.config = config;
+		this.configChanged = true;
 
-		analysisNeeded();
+		fireAnalysisRequired();
 	}
 
-	public boolean isAnalysisNeeded() {
-		return analysisNeeded;
+	public boolean isTextChanged() {
+		return textChanged;
+	}
+
+	public boolean isPatternsChanged() {
+		return patternsChanged;
+	}
+
+	public boolean isAnalysisRequired() {
+		return configChanged || textChanged || patternsChanged;
+	}
+
+	public boolean isAutoAnalysisAllowed() {
+		return (configChanged && config.analyzeOnConfigChange) || (textChanged && config.analyzeOnTextChange) || (patternsChanged && config.analyzeOnPatternsChange);
 	}
 
 	public PatternSet getPatternSet() {
@@ -146,20 +157,38 @@ public class Document extends FileDocument {
 		};
 	}
 
-	public void analyze( IProgressMonitor monitor ) {
+	protected void analyze( IProgressMonitor monitor ) {
 		if ( !updateLock.tryLock() )
 			return;
+
+		boolean analyzeText = textChanged || configChanged;
+		String analyzeContent = get();
+		Pattern[] analyzePatterns = patternSet.getDefinedPatternArray();
+
+		textChanged = false;
+		configChanged = false;
+		patternsChanged = false;
+
+		Display.getDefault().asyncExec( new Runnable() {
+
+			@Override
+			public void run() {
+				fireAnalysisStarted();
+			}
+
+		} );
 
 		try {
 			monitor.beginTask( "Анализ документа...", 1 );
 
-			analyzedText = Text.create( get(), textConfig );
+			if ( analyzeText )
+				analyzedText = Text.create( analyzeContent, config );
 
-			for ( Pattern pattern : patternSet.getDefinedPatternArray() )
-				analyzedText.getMatches( pattern ); // Обработать текст шаблоном
+			for ( Pattern pattern : analyzePatterns )
+				analyzedText.getMatches( pattern ); // Find paterns in text
 
-			analyzedPatterns.addAll( patternSet.getDefinedPatternList() );
-			analysisNeeded = false;
+			for ( Pattern pattern : analyzePatterns )
+				analyzedPatterns.add( pattern ); // Mark patterns as analyzed
 
 			monitor.worked( 1 );
 		} finally {
@@ -170,7 +199,7 @@ public class Document extends FileDocument {
 
 			@Override
 			public void run() {
-				fireAnalysisComplete();
+				fireAnalysisCompleted();
 			}
 
 		} );
@@ -184,33 +213,38 @@ public class Document extends FileDocument {
 		analysisListeners.remove( listener );
 	}
 
-	protected void analysisNeeded() {
-		if ( autoAnalyze ) { // Если стоит флаг автоанализа, анализируем текст			
-			createAnalyzeJob().schedule();
-		} else if ( !analysisNeeded ) {
-			analysisNeeded = true;
-			fireAnalysisNeedChanged();
-		}
-	}
-
 	@Override
 	protected void fireDocumentChanged( DocumentEvent event ) {
 		super.fireDocumentChanged( event );
 
-		analysisNeeded();
+		textChanged = true;
+
+		fireAnalysisRequired();
 	}
 
-	protected void fireAnalysisComplete() {
-		for ( IAnalysisListener listener : analysisListeners )
-			listener.analysisComplete( Document.this );
-
-		for ( IAnalysisListener listener : analysisListeners )
-			listener.analisysNeedChanged( Document.this ); // Извещаем подписчиков об анализе документа
+	protected void fireAnalysisRequired() {
+		if ( isAutoAnalysisAllowed() ) {
+			createAnalyzeJob().schedule();
+		} else {
+			for ( IAnalysisListener listener : analysisListeners )
+				listener.analysisRequired( Document.this ); // Извещаем подписчиков об анализе документа
+		}
 	}
 
-	protected void fireAnalysisNeedChanged() {
+	protected void fireAnalysisStarted() {
 		for ( IAnalysisListener listener : analysisListeners )
-			listener.analisysNeedChanged( Document.this ); // Извещаем подписчиков об анализе документа
+			listener.analysisStarted( Document.this );
+	}
+
+	protected void fireAnalysisCompleted() {
+		for ( IAnalysisListener listener : analysisListeners )
+			listener.analysisCompleted( Document.this );
+	}
+
+	protected void firePatternsChanged() {
+		patternsChanged = true;
+
+		fireAnalysisRequired();
 	}
 
 }

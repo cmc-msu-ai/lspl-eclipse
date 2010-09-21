@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import ru.lspl.patterns.Pattern;
@@ -12,6 +13,7 @@ public class PatternStorageAccess {
 
 	public void load( Document document, String fileName ) throws FileNotFoundException {
 		Scanner scanner = new Scanner( new File( fileName ) );
+		ArrayList<String> lines = new ArrayList<String>();
 
 		try {
 			int i = 0;
@@ -21,13 +23,15 @@ public class PatternStorageAccess {
 				if ( line.startsWith( "//" ) || line.startsWith( "#" ) )
 					continue;
 
-				document.getPatternSet().createDefinePatternJob( line ).schedule();
+				lines.add( line );
 
 				++i;
 			}
 		} finally {
 			scanner.close();
 		}
+
+		document.getPatternSet().createDefinePatternsJob( lines ).schedule();
 	}
 
 	public void save( Document document, String fileName ) throws IOException {

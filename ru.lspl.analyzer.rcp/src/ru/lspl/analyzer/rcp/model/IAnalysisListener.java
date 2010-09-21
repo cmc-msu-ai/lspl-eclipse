@@ -2,8 +2,10 @@ package ru.lspl.analyzer.rcp.model;
 
 public interface IAnalysisListener {
 
-	void analisysNeedChanged( Document doc );
+	void analysisRequired( Document doc );
 
-	void analysisComplete( Document doc );
+	void analysisStarted( Document doc );
+
+	void analysisCompleted( Document doc );
 
 }
