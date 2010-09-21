@@ -17,10 +17,12 @@ import org.eclipse.swt.widgets.Display;
 
 import ru.lspl.patterns.Pattern;
 import ru.lspl.text.Match;
+import ru.lspl.text.MatchGroup;
 import ru.lspl.text.Node;
 import ru.lspl.text.Text;
 import ru.lspl.text.TextConfig;
 import ru.lspl.text.Transition;
+import ru.lspl.text.Word;
 
 /**
  * @author alno
@@ -70,7 +72,7 @@ public class Document extends FileDocument {
 			List<Match> pm = getMatches( p );
 
 			if ( pm != null )
-				matches.addAll( getMatches( p ) );
+				matches.addAll( pm );
 		}
 
 		return matches;
@@ -83,47 +85,46 @@ public class Document extends FileDocument {
 		return null;
 	}
 
-	public List<Match> findMatchesForPosition( int offset ) {
-		List<Node> nodes = findNodesBefore( offset );
+	public List<MatchGroup> getMatchGroups( Iterable<Pattern> patterns ) {
+		if ( analyzedText == null )
+			return null;
 
-		if ( nodes.isEmpty() )
-			return Collections.emptyList();
+		List<MatchGroup> matchGroups = new ArrayList<MatchGroup>();
 
-		List<Match> transitions = new ArrayList<Match>();
+		for ( Pattern p : patterns ) {
+			List<MatchGroup> pm = getMatchGroups( p );
 
-		for ( Node n : nodes )
-			for ( Transition t : n.transitions )
-				if ( t.end.startOffset >= offset && t instanceof Match )
-					transitions.add( (Match) t );
-
-		return transitions;
-	}
-
-	public List<Transition> findTransitionsForPosition( int offset ) {
-		List<Node> nodes = findNodesBefore( offset );
-
-		if ( nodes.isEmpty() )
-			return Collections.emptyList();
-
-		List<Transition> transitions = new ArrayList<Transition>();
-
-		for ( Node n : nodes )
-			for ( Transition t : n.transitions )
-				if ( t.end.startOffset >= offset )
-					transitions.add( t );
-
-		return transitions;
-	}
-
-	private List<Node> findNodesBefore( int offset ) {
-		if ( analyzedText != null ) {
-			for ( int i = analyzedText.getNodeCount() - 1; i >= 0; --i ) {
-				Node n = analyzedText.getNode( i );
-
-				if ( n.endOffset <= offset )
-					return analyzedText.nodes.subList( 0, i + 1 );
-			}
+			if ( pm != null )
+				matchGroups.addAll( pm );
 		}
+
+		return matchGroups;
+	}
+
+	public List<MatchGroup> getMatchGroups( Pattern pattern ) {
+		if ( analyzedText != null && analyzedPatterns.contains( pattern ) )
+			return analyzedText.getMatchGroups( pattern );
+
+		return Collections.emptyList();
+	}
+
+	public List<Match> findMatchesContainingPosition( int offset ) {
+		if ( analyzedText != null )
+			return analyzedText.findMatchesContainingPosition( offset );
+
+		return Collections.emptyList();
+	}
+
+	public List<Word> findWordsContainingPosition( int offset ) {
+		if ( analyzedText != null )
+			return analyzedText.findWordsContainingPosition( offset );
+
+		return Collections.emptyList();
+	}
+
+	public List<Transition> findTransitionsContainingPosition( int offset ) {
+		if ( analyzedText != null )
+			return analyzedText.findTransitionsContainingPosition( offset );
 
 		return Collections.emptyList();
 	}

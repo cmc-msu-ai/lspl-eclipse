@@ -2,19 +2,19 @@ package ru.lspl.analyzer.rcp.providers;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 
-import ru.lspl.analyzer.rcp.utils.RangeMatchGroup;
 import ru.lspl.patterns.Pattern;
 import ru.lspl.text.Match;
+import ru.lspl.text.MatchGroup;
 
 public class TextMatchesLabelProvider extends BaseTransitionsLabelProvider implements ITableLabelProvider {
 
 	@Override
 	protected String getMainColumnText( Object obj ) {
 		if ( obj instanceof Match )
-			return "[" + ((Match) obj).start.endOffset + "-" + ((Match) obj).end.startOffset + "] " + ((Match) obj).getFragment();
+			return "[" + ((Match) obj).start.endOffset + "-" + ((Match) obj).end.startOffset + "] " + ((Match) obj).getContent();
 
-		if ( obj instanceof RangeMatchGroup )
-			return "[" + ((RangeMatchGroup) obj).start.endOffset + "-" + ((RangeMatchGroup) obj).end.startOffset + "] " + ((RangeMatchGroup) obj).getFragment();
+		if ( obj instanceof MatchGroup )
+			return "[" + ((MatchGroup) obj).start.endOffset + "-" + ((MatchGroup) obj).end.startOffset + "] " + ((MatchGroup) obj).getContent();
 
 		if ( obj instanceof Pattern )
 			return ((Pattern) obj).name;
@@ -24,8 +24,8 @@ public class TextMatchesLabelProvider extends BaseTransitionsLabelProvider imple
 
 	@Override
 	protected String getParamsColumnText( Object obj ) {
-		if ( obj instanceof RangeMatchGroup ) {
-			RangeMatchGroup group = (RangeMatchGroup) obj;
+		if ( obj instanceof MatchGroup ) {
+			MatchGroup group = (MatchGroup) obj;
 
 			if ( group.matches.size() == 1 )
 				return super.getParamsColumnText( group.matches.get( 0 ) );

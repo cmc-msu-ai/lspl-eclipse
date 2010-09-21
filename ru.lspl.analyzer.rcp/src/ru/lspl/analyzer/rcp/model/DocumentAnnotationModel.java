@@ -79,7 +79,7 @@ public class DocumentAnnotationModel extends AnnotationModel implements IAnalysi
 			return;
 
 		removeAllAnnotations();
-		for ( MatchRange m : matchRangeBuilder.buildMatchRanges( document.findMatchesForPosition( offset ), MatchRangeAnnotation.MAX_DEPTH ) ) {
+		for ( MatchRange m : matchRangeBuilder.buildMatchRanges( document.findMatchesContainingPosition( offset ), MatchRangeAnnotation.MAX_DEPTH ) ) {
 			try {
 				addAnnotation( new MatchRangeAnnotation( m.depth ), new Position( m.start, m.end - m.start ), false );
 			} catch ( BadLocationException e ) {

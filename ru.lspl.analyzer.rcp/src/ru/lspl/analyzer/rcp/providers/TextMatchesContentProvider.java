@@ -5,10 +5,9 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
 import ru.lspl.analyzer.rcp.model.Document;
-import ru.lspl.analyzer.rcp.utils.RangeMatchGroup;
-import ru.lspl.analyzer.rcp.utils.RangeMatchGroupper;
 import ru.lspl.patterns.Pattern;
 import ru.lspl.text.Match;
+import ru.lspl.text.MatchGroup;
 
 /**
  * @author alno
@@ -17,8 +16,6 @@ public class TextMatchesContentProvider extends SimpleContentProvider implements
 
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 
-	private static final RangeMatchGroupper groupper = new RangeMatchGroupper();
-
 	private Document document;
 
 	@Override
@@ -26,15 +23,11 @@ public class TextMatchesContentProvider extends SimpleContentProvider implements
 		if ( document == null || obj == null )
 			return EMPTY_ARRAY;
 
-		if ( obj instanceof RangeMatchGroup )
-			return ((RangeMatchGroup) obj).matches.toArray();
+		if ( obj instanceof MatchGroup )
+			return ((MatchGroup) obj).matches.toArray();
 
-		if ( obj instanceof Pattern ) {
-			List<Match> matches = document.getMatches( (Pattern) obj );
-
-			if ( matches != null )
-				return groupper.groupMatches( matches ).toArray();
-		}
+		if ( obj instanceof Pattern )
+			return document.getMatchGroups( (Pattern) obj ).toArray();
 
 		if ( obj instanceof Document )
 			return document.getPatternSet().getDefinedPatternArray();
@@ -52,8 +45,8 @@ public class TextMatchesContentProvider extends SimpleContentProvider implements
 		if ( document == null || obj == null )
 			return false;
 
-		if ( obj instanceof RangeMatchGroup )
-			return ((RangeMatchGroup) obj).matches.size() > 1;
+		if ( obj instanceof MatchGroup )
+			return ((MatchGroup) obj).matches.size() > 1;
 
 		if ( obj instanceof Pattern ) {
 			List<Match> matches = document.getMatches( (Pattern) obj );

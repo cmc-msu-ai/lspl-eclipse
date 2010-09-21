@@ -27,7 +27,7 @@ public class DocumentTextHover implements ITextHover, ITextHoverExtension {
 	@Override
 	public String getHoverInfo( ITextViewer textViewer, IRegion hoverRegion ) {
 		Document document = (Document) textViewer.getDocument();
-		List<Transition> transitions = document.findTransitionsForPosition( hoverRegion.getOffset() );
+		List<Transition> transitions = document.findTransitionsContainingPosition( hoverRegion.getOffset() );
 
 		StringBuilder b = new StringBuilder();
 
@@ -75,7 +75,7 @@ public class DocumentTextHover implements ITextHover, ITextHoverExtension {
 				b.append( "<li><b>" );
 				b.append( m.pattern.name );
 				b.append( "</b> - \"" );
-				b.append( m.getFragment() );
+				b.append( m.getContent() );
 				b.append( "\" - " );
 				appendAttributes( b, m.getAttributes() );
 				b.append( "</li>" );
