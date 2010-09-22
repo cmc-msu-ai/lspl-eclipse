@@ -72,8 +72,23 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 				}
 			}
 
-			if ( obj instanceof Alternative )
-				return "";
+			if ( obj instanceof Alternative ) {
+				Pattern p = ((Alternative) obj).pattern;
+				Collection<Match> matches = document.getMatches( p );
+
+				if ( matches != null ) {
+					int variantCount = 0;
+
+					for ( Match m : matches )
+						for ( int i = 0; i < m.getVariantCount(); ++i )
+							if ( m.getVariantAlternative( i ) == obj )
+								variantCount++;
+
+					return String.valueOf( variantCount );
+				} else {
+					return "?";
+				}
+			}
 
 			break;
 		}
