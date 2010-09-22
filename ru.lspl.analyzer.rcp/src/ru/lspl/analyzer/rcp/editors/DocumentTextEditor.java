@@ -52,7 +52,7 @@ public class DocumentTextEditor extends TextEditor {
 	protected ISourceViewer createSourceViewer( Composite parent, IVerticalRuler ruler, int styles ) {
 		String annotationHighlightEvent = Activator.getDefault().getPreferenceStore().getString( PreferenceConstants.ANNOTATION_HIGHLIGHT_EVENT );
 
-		SourceViewer sv = (SourceViewer) super.createSourceViewer( parent, ruler, styles );
+		SourceViewer sv = (SourceViewer) super.createSourceViewer( parent, ruler, styles | SWT.WRAP );
 
 		AnnotationPainter annotationPainter = createAnnotationPainter( sv );
 
