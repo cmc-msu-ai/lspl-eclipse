@@ -273,5 +273,17 @@
             class="ru.lspl.analyzer.rcp.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="ru.lspl.analyzer.rcp.application"
+            name="Lspl Analyzer">
+         <property
+               name="appName"
+               value="Lspl Analyzer">
+         </property>
+      </product>
+   </extension>
 
 </plugin>

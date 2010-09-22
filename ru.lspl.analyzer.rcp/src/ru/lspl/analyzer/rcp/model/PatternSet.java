@@ -92,7 +92,7 @@ public class PatternSet {
 		try {
 			monitor.beginTask( "Определение шаблона...", 1 );
 
-			for ( String source : sources ) {
+			for ( final String source : sources ) {
 				try {
 					patternBuilder.build( source );
 				} catch ( final PatternBuildingException e ) {
@@ -102,7 +102,7 @@ public class PatternSet {
 						public void run() {
 							MessageBox mb = new MessageBox( PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OK | SWT.ICON_ERROR );
 							mb.setText( "Ошибка компиляции шаблона" );
-							mb.setMessage( e.getMessage() );
+							mb.setMessage( source + " - " + e.getMessage() );
 							mb.open();
 						}
 
