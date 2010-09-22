@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -14,6 +13,7 @@ import org.eclipse.ui.services.IEvaluationService;
 
 import ru.lspl.analyzer.rcp.model.Document;
 import ru.lspl.analyzer.rcp.model.IAnalysisListener;
+import ru.lspl.text.TextRange;
 
 public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 
@@ -85,27 +85,27 @@ public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 
 	@Override
 	public void doSave( IProgressMonitor monitor ) {
-		IEditorPart editor = getEditor( 0 );
+		textEditor.doSave( monitor );
 
-		editor.doSave( monitor );
-
-		setPartName( editor.getEditorInput().getName() );
-		setInput( editor.getEditorInput() );
+		setPartName( textEditor.getEditorInput().getName() );
+		setInput( textEditor.getEditorInput() );
 	}
 
 	@Override
 	public void doSaveAs() {
-		IEditorPart editor = getEditor( 0 );
+		textEditor.doSaveAs();
 
-		editor.doSaveAs();
-
-		setPartName( editor.getEditorInput().getName() );
-		setInput( editor.getEditorInput() );
+		setPartName( textEditor.getEditorInput().getName() );
+		setInput( textEditor.getEditorInput() );
 	}
 
 	@Override
 	protected void pageChange( int newPageIndex ) {
 		super.pageChange( newPageIndex );
+	}
+
+	public void selectRange( TextRange range ) {
+		textEditor.selectAndReveal( range.getStartOffset(), range.getEndOffset() );
 	}
 
 }

@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.DrillDownAdapter;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
@@ -142,6 +143,12 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 				for ( Object obj : ((IStructuredSelection) ev.getSelection()).toArray() ) {
 					if ( obj instanceof Pattern ) {
 						Pattern pattern = (Pattern) obj;
+
+						try {
+							((MatchesView) getSite().getPage().showView( MatchesView.ID )).selectPattern( (Pattern) obj );
+						} catch ( PartInitException e ) {
+							e.printStackTrace();
+						}
 
 						for ( IPatternsViewListener listener : patternViewListeners )
 							listener.patternDoubleClick( pattern );

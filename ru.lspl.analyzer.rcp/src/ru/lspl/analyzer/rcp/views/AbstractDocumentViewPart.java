@@ -16,6 +16,10 @@ public abstract class AbstractDocumentViewPart extends ViewPart implements IPart
 	private Document document;
 	private DocumentAnnotationModel documentAnnotationModel;
 
+	public IEditorPart getEditor() {
+		return editor;
+	}
+
 	public Document getDocument() {
 		return document;
 	}

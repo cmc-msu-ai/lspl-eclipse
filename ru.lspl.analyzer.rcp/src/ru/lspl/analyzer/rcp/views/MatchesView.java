@@ -21,6 +21,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.part.DrillDownAdapter;
 
+import ru.lspl.analyzer.rcp.editors.DocumentEditor;
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
 import ru.lspl.analyzer.rcp.model.Document;
 import ru.lspl.analyzer.rcp.model.IAnalysisListener;
@@ -29,8 +30,11 @@ import ru.lspl.analyzer.rcp.providers.TextMatchesLabelProvider;
 import ru.lspl.patterns.Pattern;
 import ru.lspl.text.Match;
 import ru.lspl.text.Text;
+import ru.lspl.text.TextRange;
 
 public class MatchesView extends AbstractDocumentViewPart {
+
+	public static final String ID = "ru.lspl.analyzer.rcp.views.MatchesView";
 
 	private TreeViewer matchesViewer;
 	private DrillDownAdapter drillDownAdapter;
@@ -78,6 +82,10 @@ public class MatchesView extends AbstractDocumentViewPart {
 
 		}
 	};
+
+	public void selectPattern( Pattern pattern ) {
+		matchesViewer.setInput( pattern );
+	}
 
 	public void addMatchSelectionListener( IMatchesViewListener listener ) {
 		matchesViewListeners.add( listener );
@@ -168,11 +176,20 @@ public class MatchesView extends AbstractDocumentViewPart {
 				while ( iter.hasNext() ) {
 					Object obj = iter.next();
 
+					if ( obj instanceof TextRange ) {
+						IEditorPart editor = getEditor();
+
+						if ( editor instanceof DocumentEditor ) {
+							((DocumentEditor) editor).selectRange( (TextRange) obj );
+						} else {
+							System.out.println( editor );
+						}
+					}
+
 					if ( obj instanceof Text ) {
 						for ( IMatchesViewListener listener : matchesViewListeners )
 							listener.textDoubleClick( (Text) obj );
-					}
-					if ( obj instanceof Pattern ) {
+					} else if ( obj instanceof Pattern ) {
 						for ( IMatchesViewListener listener : matchesViewListeners )
 							listener.patternDoubleClick( (Pattern) obj );
 					} else if ( obj instanceof Match ) {

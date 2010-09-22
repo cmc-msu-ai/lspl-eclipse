@@ -23,6 +23,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.DrillDownAdapter;
 
+import ru.lspl.analyzer.rcp.editors.DocumentEditor;
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
 import ru.lspl.analyzer.rcp.model.Document;
 import ru.lspl.analyzer.rcp.model.IAnalysisListener;
@@ -31,6 +32,8 @@ import ru.lspl.analyzer.rcp.providers.SpeechPartLabelProvider;
 import ru.lspl.analyzer.rcp.providers.TextWordsContentProvider;
 import ru.lspl.analyzer.rcp.providers.TextWordsLabelProvider;
 import ru.lspl.text.Node;
+import ru.lspl.text.TextRange;
+import ru.lspl.text.Transition;
 import ru.lspl.text.Word;
 import ru.lspl.text.attributes.SpeechPart;
 
@@ -170,16 +173,32 @@ public class WordsView extends AbstractDocumentViewPart {
 				while ( iter.hasNext() ) {
 					Object o = iter.next();
 
-					if ( o instanceof Word )
+					if ( o instanceof Word ) {
+						selectTextRangeInEditor( (Word) o );
+
 						for ( IWordsViewListener listener : wordSelectionListeners )
 							listener.wordDoubleClick( (Word) o );
+					} else if ( o instanceof Node ) {
+						for ( Transition t : ((Node) o).transitions )
+							if ( t instanceof Word )
+								selectTextRangeInEditor( t );
 
-					if ( o instanceof Node )
 						for ( IWordsViewListener listener : wordSelectionListeners )
 							listener.nodeDoubleClick( (Node) o );
+					}
 				}
-
 			}
+
+			protected void selectTextRangeInEditor( TextRange range ) {
+				IEditorPart editor = getEditor();
+
+				if ( editor instanceof DocumentEditor ) {
+					((DocumentEditor) editor).selectRange( range );
+				} else {
+					System.out.println( editor );
+				}
+			}
+
 		} );
 
 		drillDownAdapter = new DrillDownAdapter( wordsViewer );
