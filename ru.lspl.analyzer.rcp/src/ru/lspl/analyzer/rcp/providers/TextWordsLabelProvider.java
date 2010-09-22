@@ -16,6 +16,18 @@ public class TextWordsLabelProvider extends BaseTransitionsLabelProvider {
 				if ( t instanceof Word )
 					return ((Word) t).form;
 
-		return "<Unknown>";
+		return "";
 	}
+
+	@Override
+	protected String getContextColumnText( Object obj ) {
+		if ( obj instanceof Node ) {
+			for ( Transition t : ((Node) obj).getTransitions() )
+				if ( t instanceof Word )
+					return extractTextFragment( t.getText(), t.getStartOffset() - 10, t.getEndOffset() + 10 );
+		}
+
+		return super.getContextColumnText( obj );
+	}
+
 }

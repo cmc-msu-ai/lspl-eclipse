@@ -19,7 +19,7 @@ public class TextMatchesLabelProvider extends BaseTransitionsLabelProvider imple
 		if ( obj instanceof Pattern )
 			return ((Pattern) obj).name;
 
-		return "<Unknown>";
+		return "";
 	}
 
 	@Override

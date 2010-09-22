@@ -38,8 +38,7 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 			if ( obj instanceof Pattern && document != null ) {// Возвращаем количество сопоставлений
 				Collection<?> matches = document.getMatches( (Pattern) obj );
 
-				if ( matches != null )
-					return String.valueOf( document.getMatchGroups( (Pattern) obj ).size() );
+				return matches != null ? String.valueOf( document.getMatchGroups( (Pattern) obj ).size() ) : "?";
 			}
 
 			if ( obj instanceof Alternative )
@@ -50,8 +49,7 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 			if ( obj instanceof Pattern && document != null ) {// Возвращаем количество сопоставлений
 				Collection<?> matches = document.getMatches( (Pattern) obj );
 
-				if ( matches != null )
-					return String.valueOf( matches.size() );
+				return matches != null ? String.valueOf( matches.size() ) : "?";
 			}
 
 			if ( obj instanceof Alternative )
@@ -69,6 +67,8 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 						variantCount += m.getVariantCount();
 
 					return String.valueOf( variantCount );
+				} else {
+					return "?";
 				}
 			}
 
@@ -78,7 +78,7 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 			break;
 		}
 
-		return "?";
+		return "";
 	}
 
 	@Override

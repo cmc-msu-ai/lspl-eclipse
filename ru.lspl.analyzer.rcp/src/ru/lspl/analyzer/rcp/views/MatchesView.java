@@ -193,11 +193,14 @@ public class MatchesView extends AbstractDocumentViewPart {
 		 * Создаем колонки
 		 */
 		TreeColumn tc1 = new TreeColumn( matchesTree, SWT.LEFT );
-		tc1.setText( "Текст" );
+		tc1.setText( "Текст сопоставления" );
 		tc1.setWidth( 300 );
 		TreeColumn tc2 = new TreeColumn( matchesTree, SWT.LEFT );
-		tc2.setText( "Параметры" );
-		tc2.setWidth( 200 );
+		tc2.setText( "Контекст" );
+		tc2.setWidth( 300 );
+		TreeColumn tc3 = new TreeColumn( matchesTree, SWT.LEFT );
+		tc3.setText( "Параметры" );
+		tc3.setWidth( 200 );
 	}
 
 	private void fillLocalPullDown( IMenuManager manager ) {

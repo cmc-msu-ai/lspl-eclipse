@@ -194,10 +194,13 @@ public class WordsView extends AbstractDocumentViewPart {
 		 */
 		TreeColumn tc1 = new TreeColumn( wordsTree, SWT.LEFT );
 		tc1.setText( "Слово" );
-		tc1.setWidth( 300 );
+		tc1.setWidth( 250 );
 		TreeColumn tc2 = new TreeColumn( wordsTree, SWT.LEFT );
-		tc2.setText( "Параметры" );
-		tc2.setWidth( 200 );
+		tc2.setText( "Контекст" );
+		tc2.setWidth( 300 );
+		TreeColumn tc3 = new TreeColumn( wordsTree, SWT.LEFT );
+		tc3.setText( "Параметры" );
+		tc3.setWidth( 200 );
 	}
 
 	private void fillLocalPullDown( IMenuManager manager ) {
