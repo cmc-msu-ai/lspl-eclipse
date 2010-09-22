@@ -31,8 +31,8 @@ public class DocumentTextHover implements ITextHover, ITextHoverExtension {
 
 		StringBuilder b = new StringBuilder();
 
-		appendWordsInfo( b, transitions );
 		appendMatchesInfo( b, transitions );
+		appendWordsInfo( b, transitions );
 
 		return b.toString();
 	}

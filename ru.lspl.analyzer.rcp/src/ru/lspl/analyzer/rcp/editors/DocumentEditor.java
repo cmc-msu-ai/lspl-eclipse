@@ -20,17 +20,21 @@ public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 	public static final String ID = "ru.lspl.analyzer.rcp.editors.DocumentEditor";
 
 	/** The text editor */
-	private DocumentTextEditor editor;
+	private DocumentTextEditor textEditor;
+	private DocumentConfigEditor configEditor;
 
 	/**
 	 * Creates page of the multi-page editor, which contains a text editor.
 	 */
 	private void createTextEditorPage() {
 		try {
-			editor = new DocumentTextEditor();
-			int index = addPage( editor, getEditorInput() );
-			setPartName( editor.getTitle() );
-			setPageText( index, "Текст" );
+			textEditor = new DocumentTextEditor();
+			configEditor = new DocumentConfigEditor();
+
+			setPageText( addPage( textEditor, getEditorInput() ), "Текст" );
+			setPageText( addPage( configEditor, getEditorInput() ), "Опции" );
+
+			setPartName( textEditor.getTitle() );
 		} catch ( PartInitException e ) {
 			ErrorDialog.openError( getSite().getShell(), "Error creating nested text editor", null, e.getStatus() );
 		}
