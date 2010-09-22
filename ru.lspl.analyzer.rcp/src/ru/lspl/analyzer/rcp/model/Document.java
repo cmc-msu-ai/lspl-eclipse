@@ -207,7 +207,7 @@ public class Document extends FileDocument {
 		try {
 			monitor.beginTask( "Анализ документа...", 1 );
 
-			if ( analyzeText ) {
+			if ( analyzeText || analyzedText == null ) {
 				analyzedText = Text.create( analyzeContent, config );
 				matchGroupCache.clear();
 			}
