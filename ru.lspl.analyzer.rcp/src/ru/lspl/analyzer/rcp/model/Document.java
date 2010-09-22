@@ -1,10 +1,13 @@
 package ru.lspl.analyzer.rcp.model;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -37,6 +40,7 @@ public class Document extends FileDocument {
 	private Text analyzedText = null;
 	private Set<Pattern> analyzedPatterns = new HashSet<Pattern>();
 	private DocumentConfig config = new DocumentConfig();
+	private Map<Pattern, SoftReference<List<MatchGroup>>> matchGroupCache = new HashMap<Pattern, SoftReference<List<MatchGroup>>>();
 
 	private final Collection<IAnalysisListener> analysisListeners = new ArrayList<IAnalysisListener>();
 
@@ -100,23 +104,45 @@ public class Document extends FileDocument {
 		if ( analyzedText == null )
 			return null;
 
-		List<MatchGroup> matchGroups = new ArrayList<MatchGroup>();
+		List<MatchGroup> matchGroups = null;
+		boolean copied = false;
 
 		for ( Pattern p : patterns ) {
 			List<MatchGroup> pm = getMatchGroups( p );
 
-			if ( pm != null )
+			if ( pm == null )
+				continue;
+
+			if ( matchGroups == null ) {
+				matchGroups = pm;
+			} else {
+				if ( !copied ) {
+					matchGroups = new ArrayList<MatchGroup>( matchGroups );
+					copied = true;
+				}
 				matchGroups.addAll( pm );
+			}
 		}
 
-		return matchGroups;
+		return matchGroups != null ? matchGroups : Collections.<MatchGroup> emptyList();
 	}
 
 	public List<MatchGroup> getMatchGroups( Pattern pattern ) {
-		if ( analyzedText != null && analyzedPatterns.contains( pattern ) )
-			return analyzedText.getMatchGroups( pattern );
+		SoftReference<List<MatchGroup>> groupsRef = matchGroupCache.get( pattern ); // Get reference from cache
+		List<MatchGroup> groups = groupsRef != null ? groupsRef.get() : null; // Get reference value
 
-		return Collections.emptyList();
+		if ( groups == null && analyzedText != null && analyzedPatterns.contains( pattern ) ) {
+			groups = analyzedText.getMatchGroups( pattern );
+
+			matchGroupCache.put( pattern, new SoftReference<List<MatchGroup>>( groups ) );
+
+			return groups;
+		}
+
+		if ( groups == null )
+			return Collections.emptyList();
+
+		return groups;
 	}
 
 	public List<Match> findMatchesContainingPosition( int offset ) {
@@ -181,8 +207,10 @@ public class Document extends FileDocument {
 		try {
 			monitor.beginTask( "Анализ документа...", 1 );
 
-			if ( analyzeText )
+			if ( analyzeText ) {
 				analyzedText = Text.create( analyzeContent, config );
+				matchGroupCache.clear();
+			}
 
 			for ( Pattern pattern : analyzePatterns )
 				analyzedText.getMatches( pattern ); // Find paterns in text
