@@ -240,15 +240,19 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 
 		TreeColumn tcPattern = new TreeColumn( patternsTree, SWT.LEFT );
 		tcPattern.setText( "Шаблон" );
-		tcPattern.setWidth( 150 );
+		tcPattern.setWidth( 180 );
 
-		TreeColumn tcParams = new TreeColumn( patternsTree, SWT.LEFT );
-		tcParams.setText( "Параметры" );
-		tcParams.setWidth( 100 );
+		TreeColumn tcMatchGroups = new TreeColumn( patternsTree, SWT.LEFT );
+		tcMatchGroups.setText( "Отрезков" );
+		tcMatchGroups.setWidth( 70 );
 
 		TreeColumn tcMatches = new TreeColumn( patternsTree, SWT.LEFT );
 		tcMatches.setText( "Сопоставлений" );
-		tcMatches.setWidth( 30 );
+		tcMatches.setWidth( 70 );
+
+		TreeColumn tcMatchVariants = new TreeColumn( patternsTree, SWT.LEFT );
+		tcMatchVariants.setText( "Вариантов" );
+		tcMatchVariants.setWidth( 70 );
 	}
 
 	private void createDefinitionControls( Composite composite ) {
