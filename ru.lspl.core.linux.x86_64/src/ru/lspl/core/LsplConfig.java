@@ -7,20 +7,35 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-import ru.lspl.LsplObject;
-
-public class LsplConfig {
+public class LsplConfig implements ILsplConfig {
 
 	public static String FRAGMENT_ID = "ru.lspl.core.linux.x86_64";
 
-	public static void configure() {
+	@Override
+	public String getDataPath() {
 		Bundle bundle = Platform.getBundle( FRAGMENT_ID );
 
 		try {
-			LsplObject.setRml( FileLocator.getBundleFile( bundle ).getAbsolutePath() + File.separatorChar + "data" );
+			return FileLocator.getBundleFile( bundle ).getAbsolutePath() + File.separatorChar + "data";
 		} catch ( IOException e ) {
-			e.printStackTrace();
+			return null;
 		}
+	}
+
+	@Override
+	public String getNativeLibraryPath() {
+		Bundle bundle = Platform.getBundle( FRAGMENT_ID );
+
+		try {
+			return FileLocator.getBundleFile( bundle ).getAbsolutePath();
+		} catch ( IOException e ) {
+			return null;
+		}
+	}
+
+	@Override
+	public String getLibraryPath() {
+		return LsplCore.getLibraryPath().toString();
 	}
 
 }

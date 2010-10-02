@@ -14,7 +14,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="RCP Perspective"
+            name="%perspective.name"
             class="ru.lspl.analyzer.rcp.Perspective"
             id="ru.lspl.analyzer.rcp.perspective">
       </perspective>
@@ -53,35 +53,35 @@
             extensions="txt"
             icon="icons/sample.gif"
             id="ru.lspl.analyzer.rcp.editors.DocumentEditor"
-            name="Document Editor">
+            name="%editor.name">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.views">
       <category
             id="ru.lspl.analyzer.rcp"
-            name="Lspl Category">
+            name="%category.name">
       </category>
       <view
             category="ru.lspl.analyzer.rcp"
             class="ru.lspl.analyzer.rcp.views.PatternsView"
             icon="icons/sample.gif"
             id="ru.lspl.analyzer.rcp.views.PatternsView"
-            name="Patterns View">
+            name="%view.name">
       </view>
       <view
             category="ru.lspl.analyzer.rcp"
             class="ru.lspl.analyzer.rcp.views.WordsView"
             icon="icons/sample.gif"
             id="ru.lspl.analyzer.rcp.views.WordsView"
-            name="Words View">
+            name="%view.name.0">
       </view>
       <view
             category="ru.lspl.analyzer.rcp"
             class="ru.lspl.analyzer.rcp.views.MatchesView"
             icon="icons/sample.gif"
             id="ru.lspl.analyzer.rcp.views.MatchesView"
-            name="Matches View"
+            name="%view.name.1"
             restorable="true">
       </view>
    </extension>
@@ -98,16 +98,16 @@
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
                id="fileMenu"
-               label="File"
-               mnemonic="F">
+               label="%menu.label"
+               mnemonic="%menu.mnemonic">
             <command
                   commandId="ru.lspl.analyzer.rcp.newDocument"
-                  label="New Document"
+                  label="%command.label"
                   style="push">
             </command>
             <command
                   commandId="ru.lspl.analyzer.rcp.openDocument"
-                  label="Open..."
+                  label="%command.label.0"
                   style="push">
             </command>
             <separator
@@ -116,17 +116,17 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.file.save"
-                  label="Save"
+                  label="%command.label.1"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.file.saveAs"
-                  label="Save As.."
+                  label="%command.label.2"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.file.saveAll"
-                  label="Save All"
+                  label="%command.label.3"
                   style="push">
             </command>
             <separator
@@ -135,38 +135,38 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.file.exit"
-                  label="Exit"
+                  label="%command.label.4"
                   style="push"
-                  tooltip="Exits the application">
+                  tooltip="%command.tooltip">
             </command>
          </menu>
          <menu
                id="patternsMenu"
-               label="Patterns"
-               mnemonic="P">
+               label="%menu.label.0"
+               mnemonic="%menu.mnemonic.0">
             <command
                   commandId="ru.lspl.analyzer.rcp.clearPatterns"
-                  label="Clear Patterns"
+                  label="%command.label.5"
                   style="push">
             </command>
             <command
                   commandId="ru.lspl.analyzer.rcp.importPatterns"
-                  label="Import Patterns..."
+                  label="%command.label.6"
                   style="push">
             </command>
             <command
                   commandId="ru.lspl.analyzer.rcp.exportPatterns"
-                  label="Export Patterns..."
+                  label="%command.label.7"
                   style="push">
             </command>
          </menu>
          <menu
                id="windowMenu"
-               label="Window"
-               mnemonic="W">
+               label="%menu.label.1"
+               mnemonic="%menu.mnemonic.1">
             <command
                   commandId="org.eclipse.ui.window.preferences"
-                  label="Preferences"
+                  label="%command.label.8"
                   style="push">
             </command>
          </menu>
@@ -178,7 +178,7 @@
                id="ru.lspl.analyzer.rcp.documentToolbar">
             <command
                   commandId="ru.lspl.analyzer.rcp.analyzeDocument"
-                  label="Analyze"
+                  label="%command.label.9"
                   style="push">
                <visibleWhen>
                   <reference
@@ -194,31 +194,31 @@
       <command
             defaultHandler="ru.lspl.analyzer.rcp.commands.NewDocumentCommand"
             id="ru.lspl.analyzer.rcp.newDocument"
-            name="New Document">
+            name="%command.name">
       </command>
       <command
             id="ru.lspl.analyzer.rcp.analyzeDocument"
-            name="Analyze Document">
+            name="%command.name.0">
       </command>
       <command
             defaultHandler="ru.lspl.analyzer.rcp.commands.OpenDocumentHandler"
             id="ru.lspl.analyzer.rcp.openDocument"
-            name="Open Document">
+            name="%command.name.1">
       </command>
       <command
             defaultHandler="ru.lspl.analyzer.rcp.commands.ClearPatternsHandler"
             id="ru.lspl.analyzer.rcp.clearPatterns"
-            name="Clear Patterns">
+            name="%command.name.2">
       </command>
       <command
             defaultHandler="ru.lspl.analyzer.rcp.commands.ExportPatternsHandler"
             id="ru.lspl.analyzer.rcp.exportPatterns"
-            name="Export Patterns">
+            name="%command.name.3">
       </command>
       <command
             defaultHandler="ru.lspl.analyzer.rcp.commands.ImportPatternsHandler"
             id="ru.lspl.analyzer.rcp.importPatterns"
-            name="Import Patterns">
+            name="%command.name.4">
       </command>
    </extension>
    <extension
@@ -264,7 +264,7 @@
       <page
             class="ru.lspl.analyzer.rcp.preferences.DocumentEditorPreferencePage"
             id="ru.lspl.analyzer.rcp.preferences.DocumentEditorPreferencePage"
-            name="Document Editor Preferences">
+            name="%page.name">
       </page>
    </extension>
    <extension
@@ -278,7 +278,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="ru.lspl.analyzer.rcp.application"
-            name="Lspl Analyzer">
+            name="%product.name">
          <property
                name="appName"
                value="Lspl Analyzer">

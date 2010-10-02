@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: ru.lspl.jdt;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: ru.lspl.jdt.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.6.0",
+ org.eclipse.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui;bundle-version="3.6.0",
+ ru.lspl.ui;bundle-version="1.0.0",
+ ru.lspl.core;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: ru.lspl.jdt

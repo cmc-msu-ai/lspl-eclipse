@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Lspl Analyzer Rcp
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: ru.lspl.analyzer.rcp; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: ru.lspl.analyzer.rcp.Activator
