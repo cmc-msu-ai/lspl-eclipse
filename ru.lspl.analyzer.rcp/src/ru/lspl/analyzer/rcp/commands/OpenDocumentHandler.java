@@ -11,7 +11,7 @@ import org.eclipse.ui.PartInitException;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditor;
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
 
 public class OpenDocumentHandler extends AbstractActivePageHandler {
 
@@ -26,7 +26,7 @@ public class OpenDocumentHandler extends AbstractActivePageHandler {
 		if ( fileName == null )
 			return null;
 
-		Document document = new Document();
+		LsplFileDocument document = new LsplFileDocument();
 		try {
 			document.load( fileName );
 		} catch ( IOException e1 ) {

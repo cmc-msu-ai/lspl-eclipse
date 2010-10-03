@@ -12,4 +12,13 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: ru.lspl.ui,
- ru.lspl.ui.editors
+ ru.lspl.ui.documents,
+ ru.lspl.ui.editors,
+ ru.lspl.ui.model,
+ ru.lspl.ui.model.access,
+ ru.lspl.ui.model.annotations,
+ ru.lspl.ui.model.listeners,
+ ru.lspl.ui.providers.content,
+ ru.lspl.ui.providers.labels,
+ ru.lspl.ui.support,
+ ru.lspl.ui.viewers

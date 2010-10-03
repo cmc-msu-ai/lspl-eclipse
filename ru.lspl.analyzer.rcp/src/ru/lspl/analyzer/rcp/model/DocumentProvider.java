@@ -9,19 +9,20 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
+import ru.lspl.ui.model.LsplDocumentAnnotationModel;
 
 public class DocumentProvider extends AbstractDocumentProvider {
 
-	private final Document document;
+	private final LsplFileDocument document;
 
 	private final DocumentEditorInput documentEditorInput;
 
-	private final DocumentAnnotationModel documentAnnotationModel;
+	private final LsplDocumentAnnotationModel documentAnnotationModel;
 
-	public DocumentProvider( DocumentEditorInput input, Document document ) {
+	public DocumentProvider( DocumentEditorInput input, LsplFileDocument document ) {
 		this.documentEditorInput = input;
 		this.document = document;
-		this.documentAnnotationModel = new DocumentAnnotationModel();
+		this.documentAnnotationModel = new LsplDocumentAnnotationModel();
 	}
 
 	@Override

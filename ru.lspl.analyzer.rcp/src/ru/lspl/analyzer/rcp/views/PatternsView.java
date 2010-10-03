@@ -1,23 +1,9 @@
 package ru.lspl.analyzer.rcp.views;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -25,76 +11,72 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.DrillDownAdapter;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
-import ru.lspl.analyzer.rcp.model.IAnalysisListener;
-import ru.lspl.analyzer.rcp.model.IPatternListener;
-import ru.lspl.analyzer.rcp.providers.DefinedPatternsContentProvider;
-import ru.lspl.analyzer.rcp.providers.PatternLabelProvider;
-import ru.lspl.patterns.Alternative;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
 import ru.lspl.patterns.Pattern;
+import ru.lspl.ui.model.ILsplDocument;
+import ru.lspl.ui.model.ILsplPatternSet;
+import ru.lspl.ui.model.LsplPatternSet;
+import ru.lspl.ui.model.listeners.IAnalysisListener;
+import ru.lspl.ui.model.listeners.IPatternListener;
+import ru.lspl.ui.providers.content.PatternsContentProvider;
+import ru.lspl.ui.providers.labels.PatternLabelProvider;
+import ru.lspl.ui.viewers.IPatternsViewerListener;
+import ru.lspl.ui.viewers.PatternsTreeViewer;
 
 public class PatternsView extends AbstractDocumentViewPart implements IAnalysisListener, IPatternListener {
 
 	public static final String ID = "ru.lspl.analyzer.rcp.views.PatternsView";
 
-	private CheckboxTreeViewer patternsViewer;
+	private PatternsTreeViewer patternsViewer;
 	private DrillDownAdapter drillDownAdapter;
 
 	private Text definePatternSource;
 	private Button definePatternButton;
 
-	private Pattern selectedPattern = null;
-
-	private final Set<Pattern> checkedPatterns = new HashSet<Pattern>();
-
 	private final PatternLabelProvider patternLabelProvider = new PatternLabelProvider();
-	private final DefinedPatternsContentProvider patternContentProvider = new DefinedPatternsContentProvider();
-
-	private final Collection<IPatternsViewListener> patternViewListeners = new LinkedList<IPatternsViewListener>();
+	private final PatternsContentProvider patternContentProvider = new PatternsContentProvider();
 
 	public void refresh() {
 		patternsViewer.refresh();
 	}
 
-	public void removePatternListener( IPatternsViewListener patternListener ) {
-		patternViewListeners.remove( patternListener );
+	public void removePatternListener( IPatternsViewerListener patternListener ) {
+		patternsViewer.removePatternListener( patternListener );
 	}
 
-	public void addPatternListener( IPatternsViewListener patternListener ) {
-		patternViewListeners.add( patternListener );
+	public void addPatternListener( IPatternsViewerListener patternListener ) {
+		patternsViewer.addPatternListener( patternListener );
 	}
 
 	public Pattern getSelectedPattern() {
-		return selectedPattern;
+		return patternsViewer.getSelectedPattern();
 	}
 
 	@Override
 	public void connect( IEditorPart editor, DocumentEditorInput input ) {
 		super.connect( editor, input );
 
-		Document document = getDocument();
+		LsplFileDocument document = getDocument();
 
 		patternLabelProvider.setDocument( document );
-		patternsViewer.setInput( document );
+		patternsViewer.setInput( document.getPatterns() );
 
 		patternsViewer.getControl().getParent().setEnabled( true );
 
 		document.addAnalysisListener( this );
-		document.getPatternSet().addPatternListener( this );
+		document.getPatterns().addPatternListener( this );
 	}
 
 	@Override
 	public void disconnect() {
 		getDocument().removeAnalysisListener( this );
-		getDocument().getPatternSet().removePatternListener( this );
+		getDocument().getPatterns().removePatternListener( this );
 
 		if ( !patternsViewer.getControl().isDisposed() ) {
 			patternsViewer.getControl().getParent().setEnabled( false );
@@ -107,7 +89,7 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 	}
 
 	public Set<Pattern> getCheckedPatterns() {
-		return checkedPatterns;
+		return patternsViewer.getCheckedPatterns();
 	}
 
 	@Override
@@ -132,101 +114,31 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 	}
 
 	private void createPatternsViewer( Composite composite ) {
-		patternsViewer = new CheckboxTreeViewer( composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
+		patternsViewer = new PatternsTreeViewer( composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
 		patternsViewer.setLabelProvider( patternLabelProvider );
 		patternsViewer.setContentProvider( patternContentProvider );
 		patternsViewer.setSorter( new ViewerSorter() );
-		patternsViewer.addDoubleClickListener( new IDoubleClickListener() {
+		patternsViewer.addPatternListener( new IPatternsViewerListener() {
 
 			@Override
-			public void doubleClick( DoubleClickEvent ev ) {
-				for ( Object obj : ((IStructuredSelection) ev.getSelection()).toArray() ) {
-					if ( obj instanceof Pattern ) {
-						Pattern pattern = (Pattern) obj;
+			public void patternSelect( Pattern pattern ) {
+				// TODO Auto-generated method stub
 
-						try {
-							((MatchesView) getSite().getPage().showView( MatchesView.ID )).selectPattern( (Pattern) obj );
-						} catch ( PartInitException e ) {
-							e.printStackTrace();
-						}
-
-						for ( IPatternsViewListener listener : patternViewListeners )
-							listener.patternDoubleClick( pattern );
-					}
-				}
-			}
-		} );
-
-		patternsViewer.addSelectionChangedListener( new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged( SelectionChangedEvent ev ) {
-				for ( Object obj : ((IStructuredSelection) ev.getSelection()).toArray() ) {
-					if ( obj instanceof Pattern ) {
-						Pattern pattern = (Pattern) obj;
-
-						selectedPattern = pattern; // Обновляем выбранный шаблон
-
-						for ( IPatternsViewListener listener : patternViewListeners )
-							listener.patternSelect( pattern );
-					} else if ( obj instanceof Alternative ) {
-						Pattern pattern = ((Alternative) obj).pattern;
-
-						selectedPattern = pattern; // Обновляем выбранный шаблон
-
-						for ( IPatternsViewListener listener : patternViewListeners )
-							listener.patternSelect( pattern );
-					}
-				}
-			}
-		} );
-
-		patternsViewer.addTreeListener( new ITreeViewerListener() {
-
-			@Override
-			public void treeCollapsed( TreeExpansionEvent ev ) {
 			}
 
 			@Override
-			public void treeExpanded( TreeExpansionEvent ev ) {
-				Object element = ev.getElement();
-
-				if ( element instanceof Pattern ) {
-					patternsViewer.setSubtreeChecked( element, patternsViewer.getChecked( element ) );
+			public void patternDoubleClick( Pattern pattern ) {
+				try {
+					((MatchesView) getSite().getPage().showView( MatchesView.ID )).selectPattern( pattern );
+				} catch ( PartInitException e ) {
+					e.printStackTrace();
 				}
 			}
 
-		} );
-
-		patternsViewer.addCheckStateListener( new ICheckStateListener() {
-
 			@Override
-			public void checkStateChanged( CheckStateChangedEvent ev ) {
-				Object element = ev.getElement();
-
-				if ( element instanceof Pattern ) {
-					patternsViewer.setSubtreeChecked( element, ev.getChecked() );
-
-					patternChecked( (Pattern) element, ev.getChecked() );
-				} else if ( element instanceof Alternative ) {
-					Object parent = ((ITreeContentProvider) patternsViewer.getContentProvider()).getParent( element );
-					patternsViewer.setSubtreeChecked( parent, ev.getChecked() );
-
-					patternChecked( (Pattern) parent, ev.getChecked() );
-				}
-			}
-
-			private void patternChecked( Pattern pattern, boolean checked ) {
-				if ( checked )
-					checkedPatterns.add( pattern );
-				else
-					checkedPatterns.remove( pattern );
-
+			public void patternChecked( Pattern pattern, boolean checked, Set<Pattern> checkedPatterns ) {
 				if ( isConnected() )
 					getDocumentAnnotationModel().setSelectedPatterns( checkedPatterns );
-
-				for ( IPatternsViewListener listener : patternViewListeners )
-					listener.patternChecked( pattern, checked, checkedPatterns );
 			}
 
 		} );
@@ -240,26 +152,7 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 		gridData.horizontalSpan = 3;
 		gridData.grabExcessHorizontalSpace = true;
 
-		Tree patternsTree = patternsViewer.getTree();
-		patternsTree.setLayoutData( gridData );
-		patternsTree.setHeaderVisible( true );
-		patternsTree.setLinesVisible( true );
-
-		TreeColumn tcPattern = new TreeColumn( patternsTree, SWT.LEFT );
-		tcPattern.setText( "Шаблон" );
-		tcPattern.setWidth( 180 );
-
-		TreeColumn tcMatchGroups = new TreeColumn( patternsTree, SWT.LEFT );
-		tcMatchGroups.setText( "Отрезков" );
-		tcMatchGroups.setWidth( 70 );
-
-		TreeColumn tcMatches = new TreeColumn( patternsTree, SWT.LEFT );
-		tcMatches.setText( "Сопоставлений" );
-		tcMatches.setWidth( 70 );
-
-		TreeColumn tcMatchVariants = new TreeColumn( patternsTree, SWT.LEFT );
-		tcMatchVariants.setText( "Вариантов" );
-		tcMatchVariants.setWidth( 70 );
+		patternsViewer.getControl().setLayoutData( gridData );
 	}
 
 	private void createDefinitionControls( Composite composite ) {
@@ -281,7 +174,7 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 				if ( !isConnected() )
 					return;
 
-				getDocument().getPatternSet().createDefinePatternJob( definePatternSource.getText() ).schedule();
+				((LsplPatternSet) getDocument().getPatterns()).createDefinePatternJob( definePatternSource.getText() ).schedule();
 			}
 		} );
 	}
@@ -305,21 +198,21 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 	}
 
 	@Override
-	public void analysisRequired( Document doc ) {
+	public void analysisRequired( ILsplDocument doc ) {
 		patternsViewer.refresh();
 	}
 
 	@Override
-	public void analysisStarted( Document doc ) {
+	public void analysisStarted( ILsplDocument doc ) {
 	}
 
 	@Override
-	public void analysisCompleted( Document doc ) {
+	public void analysisCompleted( ILsplDocument doc ) {
 		patternsViewer.refresh();
 	}
 
 	@Override
-	public void patternsUpdated( Document document ) {
+	public void patternsUpdated( ILsplPatternSet patterns ) {
 		patternsViewer.refresh();
 	}
 

@@ -11,8 +11,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
-import ru.lspl.analyzer.rcp.model.PatternStorageAccess;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
+import ru.lspl.ui.model.access.PatternStorageAccess;
 
 public class ExportPatternsHandler extends AbstractActivePageHandler {
 
@@ -25,7 +25,7 @@ public class ExportPatternsHandler extends AbstractActivePageHandler {
 		if ( editor == null || !(editor.getEditorInput() instanceof DocumentEditorInput) )
 			return null;
 
-		Document document = ((DocumentEditorInput) editor.getEditorInput()).getDocument();
+		LsplFileDocument document = ((DocumentEditorInput) editor.getEditorInput()).getDocument();
 
 		FileDialog saveFileDialog = new FileDialog( page.getWorkbenchWindow().getShell(), SWT.OPEN );
 
@@ -37,7 +37,7 @@ public class ExportPatternsHandler extends AbstractActivePageHandler {
 			return null;
 
 		try {
-			patternStorage.save( document, fileName );
+			patternStorage.save( document.getPatterns(), fileName );
 		} catch ( FileNotFoundException e ) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

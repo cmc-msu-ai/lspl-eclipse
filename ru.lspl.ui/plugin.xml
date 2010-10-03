@@ -12,5 +12,13 @@
             name="%editor.name">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors.documentProviders">
+      <provider
+            class="ru.lspl.ui.documents.LsplPatternsDocumentProvider"
+            extensions="lspl"
+            id="ru.lspl.ui.documents.LsplPatternsDocumentProvider">
+      </provider>
+   </extension>
 
 </plugin>

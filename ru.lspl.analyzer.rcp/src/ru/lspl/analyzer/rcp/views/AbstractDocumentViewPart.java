@@ -7,24 +7,24 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
-import ru.lspl.analyzer.rcp.model.DocumentAnnotationModel;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
+import ru.lspl.ui.model.LsplDocumentAnnotationModel;
 
 public abstract class AbstractDocumentViewPart extends ViewPart implements IPartListener {
 
 	private IEditorPart editor;
-	private Document document;
-	private DocumentAnnotationModel documentAnnotationModel;
+	private LsplFileDocument document;
+	private LsplDocumentAnnotationModel documentAnnotationModel;
 
 	public IEditorPart getEditor() {
 		return editor;
 	}
 
-	public Document getDocument() {
+	public LsplFileDocument getDocument() {
 		return document;
 	}
 
-	public DocumentAnnotationModel getDocumentAnnotationModel() {
+	public LsplDocumentAnnotationModel getDocumentAnnotationModel() {
 		return documentAnnotationModel;
 	}
 
@@ -34,7 +34,7 @@ public abstract class AbstractDocumentViewPart extends ViewPart implements IPart
 
 		this.editor = editor;
 		this.document = input.getDocument();
-		this.documentAnnotationModel = (DocumentAnnotationModel) input.getDocumentProvider().getAnnotationModel( input );
+		this.documentAnnotationModel = (LsplDocumentAnnotationModel) input.getDocumentProvider().getAnnotationModel( input );
 	}
 
 	public void disconnect() {

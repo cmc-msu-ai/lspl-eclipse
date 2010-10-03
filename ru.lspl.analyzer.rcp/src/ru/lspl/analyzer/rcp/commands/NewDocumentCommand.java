@@ -7,13 +7,13 @@ import org.eclipse.ui.PartInitException;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditor;
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
 
 public class NewDocumentCommand extends AbstractActivePageHandler {
 
 	@Override
 	protected Object execute( ExecutionEvent event, IWorkbenchPage page ) throws ExecutionException {
-		Document doc = new Document();
+		LsplFileDocument doc = new LsplFileDocument();
 		DocumentEditorInput input = new DocumentEditorInput( doc );
 
 		try {

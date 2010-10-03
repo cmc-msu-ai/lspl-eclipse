@@ -9,38 +9,48 @@ public class LsplPatternsEditor extends MultiPageEditorPart {
 
 	public static final String ID = "ru.lspl.ui.editors.LsplPatternsEditor";
 
-	private final LsplPatternsSourceEditor sourceEditor = new LsplPatternsSourceEditor();
+	private final LsplPatternsSourceEditor patternsEditor = new LsplPatternsSourceEditor();
+	private final LsplPatternsPreview patternsPreview = new LsplPatternsPreview();
 
 	@Override
 	protected void createPages() {
 		try {
-			setPageText( addPage( sourceEditor, getEditorInput() ), "Source" );
+			setPageText( addPage( patternsEditor, getEditorInput() ), "Source" );
+			setPageText( addPage( patternsPreview, getEditorInput() ), "Preview" );
 		} catch ( PartInitException e ) {
 			ErrorDialog.openError( getSite().getShell(), "Error creating nested text editor", null, e.getStatus() );
 		}
 
-		setPartName( sourceEditor.getTitle() );
+		setPartName( patternsEditor.getTitle() );
 	}
 
 	@Override
 	public void doSave( IProgressMonitor monitor ) {
-		sourceEditor.doSave( monitor );
+		patternsEditor.doSave( monitor );
 
-		setPartName( sourceEditor.getEditorInput().getName() );
-		setInput( sourceEditor.getEditorInput() );
+		setPartName( patternsEditor.getEditorInput().getName() );
+		setInput( patternsEditor.getEditorInput() );
 	}
 
 	@Override
 	public void doSaveAs() {
-		sourceEditor.doSaveAs();
+		patternsEditor.doSaveAs();
 
-		setPartName( sourceEditor.getEditorInput().getName() );
-		setInput( sourceEditor.getEditorInput() );
+		setPartName( patternsEditor.getEditorInput().getName() );
+		setInput( patternsEditor.getEditorInput() );
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
 		return true;
+	}
+
+	@Override
+	protected void pageChange( int newPageIndex ) {
+		super.pageChange( newPageIndex );
+
+		if ( newPageIndex == 1 )
+			patternsPreview.refresh();
 	}
 
 }

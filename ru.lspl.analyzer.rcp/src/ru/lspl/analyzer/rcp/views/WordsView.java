@@ -25,17 +25,19 @@ import org.eclipse.ui.part.DrillDownAdapter;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditor;
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
-import ru.lspl.analyzer.rcp.model.IAnalysisListener;
-import ru.lspl.analyzer.rcp.providers.SimpleContentProvider;
-import ru.lspl.analyzer.rcp.providers.SpeechPartLabelProvider;
-import ru.lspl.analyzer.rcp.providers.TextWordsContentProvider;
-import ru.lspl.analyzer.rcp.providers.TextWordsLabelProvider;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
 import ru.lspl.text.Node;
 import ru.lspl.text.TextRange;
 import ru.lspl.text.Transition;
 import ru.lspl.text.Word;
 import ru.lspl.text.attributes.SpeechPart;
+import ru.lspl.ui.model.ILsplDocument;
+import ru.lspl.ui.model.listeners.IAnalysisListener;
+import ru.lspl.ui.providers.content.SimpleContentProvider;
+import ru.lspl.ui.providers.content.TextWordsContentProvider;
+import ru.lspl.ui.providers.labels.SpeechPartLabelProvider;
+import ru.lspl.ui.providers.labels.TextWordsLabelProvider;
+import ru.lspl.ui.viewers.IWordsViewListener;
 
 public class WordsView extends AbstractDocumentViewPart {
 
@@ -51,16 +53,16 @@ public class WordsView extends AbstractDocumentViewPart {
 	private final IAnalysisListener analysisListener = new IAnalysisListener() {
 
 		@Override
-		public void analysisRequired( Document doc ) {
+		public void analysisRequired( ILsplDocument doc ) {
 			wordsViewer.refresh();
 		}
 
 		@Override
-		public void analysisStarted( Document doc ) {
+		public void analysisStarted( ILsplDocument doc ) {
 		}
 
 		@Override
-		public void analysisCompleted( Document doc ) {
+		public void analysisCompleted( ILsplDocument doc ) {
 			wordsViewer.refresh();
 		}
 	};
@@ -77,7 +79,7 @@ public class WordsView extends AbstractDocumentViewPart {
 	public void connect( IEditorPart editor, DocumentEditorInput input ) {
 		super.connect( editor, input );
 
-		Document document = getDocument();
+		LsplFileDocument document = getDocument();
 
 		document.addAnalysisListener( analysisListener );
 

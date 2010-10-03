@@ -6,7 +6,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
 
 public class ClearPatternsHandler extends AbstractActivePageHandler {
 
@@ -17,9 +17,9 @@ public class ClearPatternsHandler extends AbstractActivePageHandler {
 		if ( editor == null || !(editor.getEditorInput() instanceof DocumentEditorInput) )
 			return null;
 
-		Document document = ((DocumentEditorInput) editor.getEditorInput()).getDocument();
+		LsplFileDocument document = ((DocumentEditorInput) editor.getEditorInput()).getDocument();
 
-		document.getPatternSet().clearPatterns();
+		document.getPatterns().clearPatterns();
 
 		return null;
 	}

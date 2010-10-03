@@ -12,12 +12,12 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-import ru.lspl.analyzer.rcp.model.Document;
-import ru.lspl.analyzer.rcp.model.DocumentConfig;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
+import ru.lspl.ui.model.DocumentConfig;
 
 public class DocumentConfigEditor extends EditorPart {
 
-	private Document document;
+	private LsplFileDocument document;
 	private DocumentConfig config;
 
 	private Button analyzePunctuationCheck;

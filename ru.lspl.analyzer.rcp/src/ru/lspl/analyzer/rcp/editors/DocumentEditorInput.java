@@ -4,16 +4,16 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import ru.lspl.analyzer.rcp.model.Document;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
 import ru.lspl.analyzer.rcp.model.DocumentProvider;
 
 public class DocumentEditorInput implements IEditorInput {
 
-	private final Document document;
+	private final LsplFileDocument document;
 
 	private final DocumentProvider documentProvider;
 
-	public DocumentEditorInput( Document document ) {
+	public DocumentEditorInput( LsplFileDocument document ) {
 		this.document = document;
 		this.documentProvider = new DocumentProvider( this, document );
 	}
@@ -70,7 +70,7 @@ public class DocumentEditorInput implements IEditorInput {
 		return document.equals( ((DocumentEditorInput) obj).document );
 	}
 
-	public Document getDocument() {
+	public LsplFileDocument getDocument() {
 		return document;
 	}
 

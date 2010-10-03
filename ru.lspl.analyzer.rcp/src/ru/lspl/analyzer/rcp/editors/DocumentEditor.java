@@ -11,9 +11,9 @@ import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.services.IEvaluationService;
 
-import ru.lspl.analyzer.rcp.model.Document;
-import ru.lspl.analyzer.rcp.model.IAnalysisListener;
 import ru.lspl.text.TextRange;
+import ru.lspl.ui.model.ILsplDocument;
+import ru.lspl.ui.model.listeners.IAnalysisListener;
 
 public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 
@@ -59,17 +59,17 @@ public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 		((DocumentEditorInput) editorInput).getDocument().addAnalysisListener( new IAnalysisListener() {
 
 			@Override
-			public void analysisRequired( Document doc ) {
+			public void analysisRequired( ILsplDocument doc ) {
 				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
 			}
 
 			@Override
-			public void analysisStarted( Document doc ) {
+			public void analysisStarted( ILsplDocument doc ) {
 				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
 			}
 
 			@Override
-			public void analysisCompleted( Document doc ) {
+			public void analysisCompleted( ILsplDocument doc ) {
 				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
 			}
 

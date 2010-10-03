@@ -5,7 +5,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
 
 public class DocumentStateTester extends PropertyTester {
 
@@ -21,7 +21,7 @@ public class DocumentStateTester extends PropertyTester {
 		if ( !(input instanceof DocumentEditorInput) )
 			return false;
 
-		Document document = ((DocumentEditorInput) input).getDocument();
+		LsplFileDocument document = ((DocumentEditorInput) input).getDocument();
 
 		if ( property.equals( ANALYISIS_NEEDED ) )
 			return expectedValue.equals( document.isAnalysisRequired() );

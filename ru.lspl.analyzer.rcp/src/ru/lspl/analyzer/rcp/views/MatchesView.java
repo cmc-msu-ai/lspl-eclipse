@@ -1,21 +1,12 @@
 package ru.lspl.analyzer.rcp.views;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewReference;
@@ -23,47 +14,49 @@ import org.eclipse.ui.part.DrillDownAdapter;
 
 import ru.lspl.analyzer.rcp.editors.DocumentEditor;
 import ru.lspl.analyzer.rcp.editors.DocumentEditorInput;
-import ru.lspl.analyzer.rcp.model.Document;
-import ru.lspl.analyzer.rcp.model.IAnalysisListener;
-import ru.lspl.analyzer.rcp.providers.TextMatchesContentProvider;
-import ru.lspl.analyzer.rcp.providers.TextMatchesLabelProvider;
+import ru.lspl.analyzer.rcp.model.LsplFileDocument;
 import ru.lspl.patterns.Pattern;
 import ru.lspl.text.Match;
-import ru.lspl.text.Text;
+import ru.lspl.text.MatchGroup;
 import ru.lspl.text.TextRange;
+import ru.lspl.ui.model.ILsplDocument;
+import ru.lspl.ui.model.listeners.IAnalysisListener;
+import ru.lspl.ui.providers.content.TextMatchesContentProvider;
+import ru.lspl.ui.providers.labels.TextMatchesLabelProvider;
+import ru.lspl.ui.viewers.IPatternsViewerListener;
+import ru.lspl.ui.viewers.MatchesTreeViewer;
+import ru.lspl.ui.viewers.MatchesViewAdapter;
 
 public class MatchesView extends AbstractDocumentViewPart {
 
 	public static final String ID = "ru.lspl.analyzer.rcp.views.MatchesView";
 
-	private TreeViewer matchesViewer;
+	private MatchesTreeViewer matchesViewer;
 	private DrillDownAdapter drillDownAdapter;
 
 	private PatternsView patternsView;
 
 	private final TextMatchesContentProvider matchesContentProvider = new TextMatchesContentProvider();
 
-	private final Collection<IMatchesViewListener> matchesViewListeners = new ArrayList<IMatchesViewListener>();
-
 	private final IAnalysisListener documentListener = new IAnalysisListener() {
 
 		@Override
-		public void analysisRequired( Document doc ) {
+		public void analysisRequired( ILsplDocument doc ) {
 			matchesViewer.refresh();
 		}
 
 		@Override
-		public void analysisStarted( Document doc ) {
+		public void analysisStarted( ILsplDocument doc ) {
 		}
 
 		@Override
-		public void analysisCompleted( Document doc ) {
+		public void analysisCompleted( ILsplDocument doc ) {
 			matchesViewer.refresh();
 		}
 
 	};
 
-	private final IPatternsViewListener patternsViewListener = new IPatternsViewListener() {
+	private final IPatternsViewerListener patternsViewListener = new IPatternsViewerListener() {
 
 		@Override
 		public void patternSelect( Pattern pattern ) {
@@ -87,19 +80,11 @@ public class MatchesView extends AbstractDocumentViewPart {
 		matchesViewer.setInput( pattern );
 	}
 
-	public void addMatchSelectionListener( IMatchesViewListener listener ) {
-		matchesViewListeners.add( listener );
-	}
-
-	public void removeMatchSelectionListener( IMatchesViewListener listener ) {
-		matchesViewListeners.remove( listener );
-	}
-
 	@Override
 	public void connect( IEditorPart editor, DocumentEditorInput input ) {
 		super.connect( editor, input );
 
-		Document document = getDocument();
+		LsplFileDocument document = getDocument();
 
 		matchesContentProvider.setDocument( document );
 		matchesViewer.setInput( document );
@@ -164,60 +149,34 @@ public class MatchesView extends AbstractDocumentViewPart {
 	}
 
 	private void createMatchesViewer( Composite parent ) {
-		matchesViewer = new TreeViewer( parent, SWT.BORDER );
+		matchesViewer = new MatchesTreeViewer( parent, SWT.BORDER );
 		matchesViewer.setContentProvider( matchesContentProvider );
 		matchesViewer.setLabelProvider( new TextMatchesLabelProvider() );
-		matchesViewer.addDoubleClickListener( new IDoubleClickListener() {
+		matchesViewer.addMatchSelectionListener( new MatchesViewAdapter() {
 
 			@Override
-			public void doubleClick( DoubleClickEvent ev ) {
-				Iterator<?> iter = ((IStructuredSelection) ev.getSelection()).iterator();
+			public void matchGroupDoubleClick( MatchGroup group ) {
+				selectRange( group );
+			}
 
-				while ( iter.hasNext() ) {
-					Object obj = iter.next();
+			@Override
+			public void matchDoubleClick( Match match ) {
+				selectRange( match );
+			}
 
-					if ( obj instanceof TextRange ) {
-						IEditorPart editor = getEditor();
+			private void selectRange( TextRange range ) {
+				IEditorPart editor = getEditor();
 
-						if ( editor instanceof DocumentEditor ) {
-							((DocumentEditor) editor).selectRange( (TextRange) obj );
-						} else {
-							System.out.println( editor );
-						}
-					}
-
-					if ( obj instanceof Text ) {
-						for ( IMatchesViewListener listener : matchesViewListeners )
-							listener.textDoubleClick( (Text) obj );
-					} else if ( obj instanceof Pattern ) {
-						for ( IMatchesViewListener listener : matchesViewListeners )
-							listener.patternDoubleClick( (Pattern) obj );
-					} else if ( obj instanceof Match ) {
-						for ( IMatchesViewListener listener : matchesViewListeners )
-							listener.matchDoubleClick( (Match) obj );
-					}
+				if ( editor instanceof DocumentEditor ) {
+					((DocumentEditor) editor).selectRange( range );
+				} else {
+					System.out.println( editor );
 				}
 			}
+
 		} );
 
 		drillDownAdapter = new DrillDownAdapter( matchesViewer );
-
-		Tree matchesTree = matchesViewer.getTree();
-		matchesTree.setHeaderVisible( true );
-		matchesTree.setLinesVisible( true );
-
-		/*
-		 * Создаем колонки
-		 */
-		TreeColumn tc1 = new TreeColumn( matchesTree, SWT.LEFT );
-		tc1.setText( "Текст сопоставления" );
-		tc1.setWidth( 300 );
-		TreeColumn tc2 = new TreeColumn( matchesTree, SWT.LEFT );
-		tc2.setText( "Контекст" );
-		tc2.setWidth( 300 );
-		TreeColumn tc3 = new TreeColumn( matchesTree, SWT.LEFT );
-		tc3.setText( "Параметры" );
-		tc3.setWidth( 200 );
 	}
 
 	private void fillLocalPullDown( IMenuManager manager ) {
