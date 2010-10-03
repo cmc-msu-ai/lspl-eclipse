@@ -20,6 +20,9 @@ public class MatchRangeBuilder {
 	};
 
 	public List<MatchRange> buildMatchRanges( Collection<Match> inputMatches, int maxDepth ) {
+		if ( inputMatches == null )
+			return null;
+		
 		List<Match> matches = new ArrayList<Match>( inputMatches );
 		List<MatchRange> ranges = new ArrayList<MatchRange>();
 

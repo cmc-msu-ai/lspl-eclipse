@@ -21,11 +21,11 @@ import ru.lspl.text.Match;
 import ru.lspl.text.MatchGroup;
 import ru.lspl.text.TextRange;
 import ru.lspl.ui.documents.LsplPatternsDocumentProvider;
+import ru.lspl.ui.documents.LsplSourcePatternSet;
 import ru.lspl.ui.model.DocumentConfig;
 import ru.lspl.ui.model.ILsplDocument;
 import ru.lspl.ui.model.LsplDocument;
 import ru.lspl.ui.model.LsplDocumentAnnotationModel;
-import ru.lspl.ui.model.LsplPatternSet;
 import ru.lspl.ui.model.listeners.AnalysisAdapter;
 import ru.lspl.ui.providers.content.PatternsContentProvider;
 import ru.lspl.ui.providers.content.TextMatchesContentProvider;
@@ -54,7 +54,7 @@ public class LsplPatternsPreview extends EditorPart {
 	private final DocumentConfig textDocumentConfig = new DocumentConfig();
 
 	private LsplPatternsDocumentProvider patternsDocumentProvider;
-	private LsplPatternSet patterns;
+	private LsplSourcePatternSet patterns;
 
 	private SourceViewer textViewer;
 	private LsplDocument textDocument;
@@ -80,7 +80,8 @@ public class LsplPatternsPreview extends EditorPart {
 
 			@Override
 			public void analysisCompleted( ILsplDocument doc ) {
-				refresh();
+				patternsViewer.refresh();
+				matchesViewer.refresh();
 			}
 
 		} );
@@ -121,8 +122,8 @@ public class LsplPatternsPreview extends EditorPart {
 	}
 
 	public void refresh() {
-		patternsViewer.refresh();
-		matchesViewer.refresh();
+		patterns.update();
+		textDocument.createAnalyzeJob().schedule();
 	}
 
 	private void createMatchesViewer( Composite parent ) {
@@ -156,6 +157,7 @@ public class LsplPatternsPreview extends EditorPart {
 		} );
 
 		matchesContentProvider.setDocument( textDocument );
+		matchesViewer.setInput( textDocument );
 	}
 
 	private void createPatternsViewer( Composite parent ) {
@@ -188,9 +190,8 @@ public class LsplPatternsPreview extends EditorPart {
 
 		} );
 
-		patternsViewer.setInput( patterns );
-
 		patternLabelProvider.setDocument( textDocument );
+		patternsViewer.setInput( patterns );
 	}
 
 	private void createTextViewer( Composite parent ) {

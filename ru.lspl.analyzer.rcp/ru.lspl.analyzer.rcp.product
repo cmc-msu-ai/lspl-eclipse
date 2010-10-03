@@ -56,6 +56,7 @@
       <plugin id="ru.lspl.analyzer.rcp"/>
       <plugin id="ru.lspl.core"/>
       <plugin id="ru.lspl.core.linux.x86_64" fragment="true"/>
+      <plugin id="ru.lspl.ui"/>
    </plugins>
 
 

@@ -1,16 +1,13 @@
 package ru.lspl.ui.documents;
 
-import java.util.List;
-
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 
-import ru.lspl.patterns.Pattern;
 import ru.lspl.ui.model.LsplPatternSet;
 import ru.lspl.ui.model.access.PatternStorageAccess;
 
-class LsplSourcePatternSet extends LsplPatternSet implements IDocumentListener {
+public class LsplSourcePatternSet extends LsplPatternSet implements IDocumentListener {
 
 	private IDocument document;
 
@@ -37,15 +34,10 @@ class LsplSourcePatternSet extends LsplPatternSet implements IDocumentListener {
 		dirty = true;
 	}
 
-	@Override
-	protected List<Pattern> getDelegatePatternList() {
-		if ( dirty )
-			update();
-
-		return super.getDelegatePatternList();
-	}
-
-	private void update() {
+	public void update() {
+		if ( !dirty )
+			return;
+		
 		clearPatterns();
 
 		dirty = false;

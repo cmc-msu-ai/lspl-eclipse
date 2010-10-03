@@ -278,7 +278,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="ru.lspl.analyzer.rcp.application"
-            name="%product.name">
+            name="Lspl Analyzer">
          <property
                name="appName"
                value="Lspl Analyzer">
