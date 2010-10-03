@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/ru.lspl.jdt.feature_1.0.0.201010031736.jar" id="ru.lspl.jdt.feature" version="1.0.0.201010031736">
+      <category name="ru.lspl"/>
+   </feature>
+   <category-def name="ru.lspl" label="Lspl Library"/>
+</site>
