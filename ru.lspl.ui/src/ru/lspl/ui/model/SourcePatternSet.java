@@ -1,13 +1,12 @@
-package ru.lspl.ui.documents;
+package ru.lspl.ui.model;
 
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 
-import ru.lspl.ui.model.LsplPatternSet;
 import ru.lspl.ui.model.access.PatternStorageAccess;
 
-public class LsplSourcePatternSet extends LsplPatternSet implements IDocumentListener {
+public class SourcePatternSet extends LsplPatternSet implements IDocumentListener {
 
 	private IDocument document;
 
@@ -15,7 +14,7 @@ public class LsplSourcePatternSet extends LsplPatternSet implements IDocumentLis
 
 	private boolean dirty = true;
 
-	public LsplSourcePatternSet( IDocument document ) {
+	public SourcePatternSet( IDocument document ) {
 		this.document = document;
 		this.document.addDocumentListener( this );
 	}
@@ -37,7 +36,7 @@ public class LsplSourcePatternSet extends LsplPatternSet implements IDocumentLis
 	public void update() {
 		if ( !dirty )
 			return;
-		
+
 		clearPatterns();
 
 		dirty = false;

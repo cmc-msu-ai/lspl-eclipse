@@ -5,11 +5,11 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
-public class LsplPatternsEditor extends MultiPageEditorPart {
+public class PatternsEditor extends MultiPageEditorPart {
 
 	public static final String ID = "ru.lspl.ui.editors.LsplPatternsEditor";
 
-	private final LsplPatternsSourceEditor patternsEditor = new LsplPatternsSourceEditor();
+	private final PatternsSourceEditor patternsEditor = new PatternsSourceEditor();
 	private final LsplPatternsPreview patternsPreview = new LsplPatternsPreview();
 
 	@Override

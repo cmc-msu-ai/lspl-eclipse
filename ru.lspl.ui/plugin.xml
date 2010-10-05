@@ -4,20 +4,20 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="ru.lspl.ui.editors.LsplPatternsEditor"
+            class="ru.lspl.ui.editors.PatternsEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="true"
             extensions="lspl"
-            id="ru.lspl.ui.editors.LsplPatternsEditor"
+            id="ru.lspl.ui.editors.PatternsEditor"
             name="%editor.name">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.editors.documentProviders">
       <provider
-            class="ru.lspl.ui.documents.LsplPatternsDocumentProvider"
+            class="ru.lspl.ui.editors.PatternsDocumentProvider"
             extensions="lspl"
-            id="ru.lspl.ui.documents.LsplPatternsDocumentProvider">
+            id="ru.lspl.ui.editors.PatternsDocumentProvider">
       </provider>
    </extension>
 

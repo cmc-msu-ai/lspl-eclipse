@@ -20,12 +20,11 @@ import ru.lspl.patterns.Pattern;
 import ru.lspl.text.Match;
 import ru.lspl.text.MatchGroup;
 import ru.lspl.text.TextRange;
-import ru.lspl.ui.documents.LsplPatternsDocumentProvider;
-import ru.lspl.ui.documents.LsplSourcePatternSet;
 import ru.lspl.ui.model.DocumentConfig;
 import ru.lspl.ui.model.ILsplDocument;
 import ru.lspl.ui.model.LsplDocument;
 import ru.lspl.ui.model.LsplDocumentAnnotationModel;
+import ru.lspl.ui.model.SourcePatternSet;
 import ru.lspl.ui.model.listeners.AnalysisAdapter;
 import ru.lspl.ui.providers.content.PatternsContentProvider;
 import ru.lspl.ui.providers.content.TextMatchesContentProvider;
@@ -53,8 +52,8 @@ public class LsplPatternsPreview extends EditorPart {
 
 	private final DocumentConfig textDocumentConfig = new DocumentConfig();
 
-	private LsplPatternsDocumentProvider patternsDocumentProvider;
-	private LsplSourcePatternSet patterns;
+	private PatternsDocumentProvider patternsDocumentProvider;
+	private SourcePatternSet patterns;
 
 	private SourceViewer textViewer;
 	private LsplDocument textDocument;
@@ -71,7 +70,7 @@ public class LsplPatternsPreview extends EditorPart {
 	public void init( IEditorSite site, IEditorInput input ) throws PartInitException {
 		setSite( site );
 
-		patternsDocumentProvider = (LsplPatternsDocumentProvider) DocumentProviderRegistry.getDefault().getDocumentProvider( input );
+		patternsDocumentProvider = (PatternsDocumentProvider) DocumentProviderRegistry.getDefault().getDocumentProvider( input );
 		patterns = patternsDocumentProvider.getPatterns( input );
 
 		textDocument = new LsplDocument( patterns );
