@@ -15,7 +15,7 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 
-	private final DisplayManager displayManager = new DisplayManager();
+	private DisplayManager displayManager;
 
 	/**
 	 * The constructor
@@ -30,12 +30,18 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start( BundleContext context ) throws Exception {
 		super.start( context );
+
+		displayManager = new DisplayManager();
+
 		plugin = this;
 	}
 
 	@Override
 	public void stop( BundleContext context ) throws Exception {
 		plugin = null;
+
+		displayManager.dispose();
+
 		super.stop( context );
 	}
 

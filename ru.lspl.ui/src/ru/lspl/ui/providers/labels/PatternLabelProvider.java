@@ -64,7 +64,7 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 					int variantCount = 0;
 
 					for ( Match m : matches )
-						variantCount += m.getVariantCount();
+						variantCount += m.getVariants().size();
 
 					return String.valueOf( variantCount );
 				} else {
@@ -80,7 +80,7 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 					int variantCount = 0;
 
 					for ( Match m : matches )
-						for ( int i = 0; i < m.getVariantCount(); ++i )
+						for ( int i = 0; i < m.getVariants().size(); ++i )
 							if ( m.getVariantAlternative( i ) == obj )
 								variantCount++;
 

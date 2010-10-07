@@ -51,7 +51,7 @@ public class PatternsSourceConfiguration extends SourceViewerConfiguration {
 
 	public PatternsScanner getPatternsScanner() {
 		if ( scanner == null ) {
-			scanner = new PatternsScanner( displayManager );
+			scanner = new PatternsScanner( editor, displayManager );
 			scanner.setDefaultReturnToken( new Token( new TextAttribute( displayManager.getColor( ILsplColorConstants.DEFAULT ) ) ) );
 		}
 

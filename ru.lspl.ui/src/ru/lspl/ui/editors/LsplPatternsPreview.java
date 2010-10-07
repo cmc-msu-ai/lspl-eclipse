@@ -7,8 +7,7 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.VerticalRuler;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -91,11 +90,15 @@ public class LsplPatternsPreview extends EditorPart {
 
 	@Override
 	public void createPartControl( Composite parent ) {
-		parent.setLayout( new GridLayout( 2, false ) );
+		SashForm sfVertical = new SashForm( parent, SWT.NONE );
+		sfVertical.setOrientation( SWT.VERTICAL );
 
-		createTextViewer( parent );
-		createPatternsViewer( parent );
-		createMatchesViewer( parent );
+		SashForm sfHorizontal = new SashForm( sfVertical, SWT.NONE );
+		sfHorizontal.setOrientation( SWT.HORIZONTAL );
+
+		createTextViewer( sfHorizontal );
+		createPatternsViewer( sfHorizontal );
+		createMatchesViewer( sfVertical );
 	}
 
 	@Override
@@ -126,15 +129,7 @@ public class LsplPatternsPreview extends EditorPart {
 	}
 
 	private void createMatchesViewer( Composite parent ) {
-		GridData gridData = new GridData();
-		gridData.grabExcessVerticalSpace = true;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.verticalAlignment = GridData.FILL;
-		gridData.horizontalSpan = 2;
-
 		matchesViewer = new MatchesTreeViewer( parent, SWT.BORDER );
-		matchesViewer.getTree().setLayoutData( gridData );
 		matchesViewer.setContentProvider( matchesContentProvider );
 		matchesViewer.setLabelProvider( new TextMatchesLabelProvider() );
 		matchesViewer.addMatchSelectionListener( new MatchesViewAdapter() {
@@ -160,17 +155,10 @@ public class LsplPatternsPreview extends EditorPart {
 	}
 
 	private void createPatternsViewer( Composite parent ) {
-		GridData gridData = new GridData();
-		gridData.grabExcessVerticalSpace = true;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.verticalAlignment = GridData.FILL;
-
 		patternsViewer = new PatternsTreeViewer( parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
 		patternsViewer.setLabelProvider( patternLabelProvider );
 		patternsViewer.setContentProvider( new PatternsContentProvider() );
 		patternsViewer.setSorter( new ViewerSorter() );
-		patternsViewer.getControl().setLayoutData( gridData );
 		patternsViewer.addPatternListener( new IPatternsViewerListener() {
 
 			@Override
@@ -194,14 +182,7 @@ public class LsplPatternsPreview extends EditorPart {
 	}
 
 	private void createTextViewer( Composite parent ) {
-		GridData gridData = new GridData();
-		gridData.grabExcessVerticalSpace = true;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.verticalAlignment = GridData.FILL;
-
-		textViewer = new SourceViewer( parent, new VerticalRuler( 0 ), SWT.BORDER );
-		textViewer.getControl().setLayoutData( gridData );
+		textViewer = new SourceViewer( parent, new VerticalRuler( 0 ), SWT.BORDER | SWT.WRAP | SWT.V_SCROLL );
 		textViewer.configure( new DocumentTextEditorConfiguration() );
 		textViewer.setDocument( textDocument, textDocumentAnnotationModel );
 
