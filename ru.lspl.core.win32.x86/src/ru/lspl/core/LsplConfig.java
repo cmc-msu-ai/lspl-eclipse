@@ -9,6 +9,12 @@ import org.osgi.framework.Bundle;
 
 public class LsplConfig implements ILsplConfig {
 
+	static {
+		System.loadLibrary( "iconv" );
+		System.loadLibrary( "libpcre" );
+		System.loadLibrary( "libpcrecpp" );
+	}
+
 	public static String FRAGMENT_ID = "ru.lspl.core.win32.x86";
 
 	@Override
