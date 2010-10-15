@@ -11,7 +11,6 @@ public class PatternsContentProvider extends SimpleContentProvider implements IT
 
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 
-	@Override
 	public Object[] getChildren( Object obj ) {
 		if ( obj instanceof Collection<?> )
 			return ((Collection<?>) obj).toArray();
@@ -22,7 +21,6 @@ public class PatternsContentProvider extends SimpleContentProvider implements IT
 		return EMPTY_ARRAY;
 	}
 
-	@Override
 	public Object getParent( Object obj ) {
 		if ( obj instanceof Alternative )
 			return ((Alternative) obj).pattern;
@@ -30,7 +28,6 @@ public class PatternsContentProvider extends SimpleContentProvider implements IT
 		return null;
 	}
 
-	@Override
 	public boolean hasChildren( Object obj ) {
 		return obj instanceof Pattern || obj instanceof Collection<?>;
 	}

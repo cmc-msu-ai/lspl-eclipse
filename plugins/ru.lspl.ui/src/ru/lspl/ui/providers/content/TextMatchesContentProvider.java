@@ -18,7 +18,6 @@ public class TextMatchesContentProvider extends SimpleContentProvider implements
 
 	private ILsplDocument document;
 
-	@Override
 	public Object[] getChildren( Object obj ) {
 		if ( document == null || obj == null )
 			return EMPTY_ARRAY;
@@ -35,12 +34,10 @@ public class TextMatchesContentProvider extends SimpleContentProvider implements
 		return EMPTY_ARRAY;
 	}
 
-	@Override
 	public Object getParent( Object obj ) {
 		return null;
 	}
 
-	@Override
 	public boolean hasChildren( Object obj ) {
 		if ( document == null || obj == null )
 			return false;

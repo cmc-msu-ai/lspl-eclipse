@@ -24,7 +24,6 @@ import ru.lspl.ui.model.ILsplDocument;
 
 public class LsplDocumentTextHover implements ITextHover, ITextHoverExtension {
 
-	@Override
 	public String getHoverInfo( ITextViewer textViewer, IRegion hoverRegion ) {
 		ILsplDocument document = (ILsplDocument) textViewer.getDocument();
 		List<Transition> transitions = document.findTransitionsContainingPosition( hoverRegion.getOffset() );
@@ -102,15 +101,13 @@ public class LsplDocumentTextHover implements ITextHover, ITextHoverExtension {
 		}
 	}
 
-	@Override
 	public IRegion getHoverRegion( ITextViewer textViewer, int offset ) {
 		return new Region( offset, 0 );
 	}
 
-	@Override
 	public IInformationControlCreator getHoverControlCreator() {
 		return new IInformationControlCreator() {
-			@Override
+
 			public IInformationControl createInformationControl( Shell parent ) {
 				DefaultInformationControl control = new DefaultInformationControl( parent, EditorsUI.getTooltipAffordanceString() );
 

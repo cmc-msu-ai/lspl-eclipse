@@ -11,7 +11,6 @@ public class DocumentStateTester extends PropertyTester {
 
 	private static final String ANALYISIS_NEEDED = "analysisNeeded";
 
-	@Override
 	public boolean test( Object receiver, String property, Object[] args, Object expectedValue ) {
 		if ( !(receiver instanceof IEditorPart) )
 			return false;

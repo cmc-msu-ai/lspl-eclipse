@@ -31,12 +31,10 @@ public class LsplClasspathContainer implements IClasspathContainer {
 	private static IClasspathAttribute createNativeLibraryAttribute() {
 		return new IClasspathAttribute() {
 
-			@Override
 			public String getValue() {
 				return LsplCore.getNativeLibraryPath().toString();
 			}
 
-			@Override
 			public String getName() {
 				return "org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY";
 			}
@@ -50,22 +48,18 @@ public class LsplClasspathContainer implements IClasspathContainer {
 		this.path = path;
 	}
 
-	@Override
 	public IClasspathEntry[] getClasspathEntries() {
 		return new IClasspathEntry[] { createLibraryEntry() };
 	}
 
-	@Override
 	public String getDescription() {
 		return "Lspl library";
 	}
 
-	@Override
 	public int getKind() {
 		return K_APPLICATION;
 	}
 
-	@Override
 	public IPath getPath() {
 		return path;
 	}

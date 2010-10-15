@@ -44,15 +44,12 @@ public class LsplDocumentAnnotationModel extends AnnotationModel implements IAna
 		annotations.clear();
 	}
 
-	@Override
 	public void analysisRequired( ILsplDocument doc ) {
 	}
 
-	@Override
 	public void analysisStarted( ILsplDocument doc ) {
 	}
 
-	@Override
 	public void analysisCompleted( ILsplDocument doc ) {
 		// Building selected annotations
 		annotations.clear();

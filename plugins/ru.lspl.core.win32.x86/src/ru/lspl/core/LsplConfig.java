@@ -17,7 +17,6 @@ public class LsplConfig implements ILsplConfig {
 
 	public static String FRAGMENT_ID = "ru.lspl.core.win32.x86";
 
-	@Override
 	public String getDataPath() {
 		Bundle bundle = Platform.getBundle( FRAGMENT_ID );
 
@@ -28,7 +27,6 @@ public class LsplConfig implements ILsplConfig {
 		}
 	}
 
-	@Override
 	public String getNativeLibraryPath() {
 		Bundle bundle = Platform.getBundle( FRAGMENT_ID );
 
@@ -39,7 +37,6 @@ public class LsplConfig implements ILsplConfig {
 		}
 	}
 
-	@Override
 	public String getLibraryPath() {
 		return LsplCore.getLibraryPath().toString();
 	}

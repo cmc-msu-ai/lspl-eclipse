@@ -24,11 +24,9 @@ public class SourcePatternSet extends LsplPatternSet implements IDocumentListene
 		this.document = null;
 	}
 
-	@Override
 	public void documentAboutToBeChanged( DocumentEvent event ) {
 	}
 
-	@Override
 	public void documentChanged( DocumentEvent event ) {
 		dirty = true;
 	}

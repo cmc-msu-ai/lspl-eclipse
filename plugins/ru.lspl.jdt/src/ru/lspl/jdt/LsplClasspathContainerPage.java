@@ -41,7 +41,6 @@ public class LsplClasspathContainerPage extends NewElementWizardPage implements 
 		containerEntryResult = LsplClasspathContainer.createContainerEntry();
 	}
 
-	@Override
 	public void createControl( Composite parent ) {
 		Composite composite = new Composite( parent, SWT.NONE );
 		composite.setLayout( new FillLayout() );
@@ -54,11 +53,9 @@ public class LsplClasspathContainerPage extends NewElementWizardPage implements 
 		setControl( composite );
 	}
 
-	@Override
 	public void initialize( IJavaProject project, IClasspathEntry[] arg1 ) {
 	}
 
-	@Override
 	public boolean finish() {
 		try {
 			IJavaProject[] javaProjects = new IJavaProject[] { getPlaceholderProject() };
@@ -70,12 +67,10 @@ public class LsplClasspathContainerPage extends NewElementWizardPage implements 
 		return true;
 	}
 
-	@Override
 	public IClasspathEntry getSelection() {
 		return containerEntryResult;
 	}
 
-	@Override
 	public void setSelection( IClasspathEntry entry ) {
 	}
 

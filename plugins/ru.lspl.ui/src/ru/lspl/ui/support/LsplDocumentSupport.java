@@ -39,7 +39,6 @@ public abstract class LsplDocumentSupport {
 		if ( annotationHighlightEvent.equals( EVENT_MOVE ) ) {
 			sourceViewer.getTextWidget().addMouseMoveListener( new MouseMoveListener() {
 
-				@Override
 				public void mouseMove( MouseEvent e ) {
 					getAnnotationModel().showHoveredAnnotations( getMouseOffset( sourceViewer, e ) );
 				}
@@ -73,17 +72,14 @@ public abstract class LsplDocumentSupport {
 	protected AnnotationPainter createAnnotationPainter( SourceViewer sv ) {
 		IAnnotationAccess annotationAccess = new IAnnotationAccess() {
 
-			@Override
 			public Object getType( Annotation annotation ) {
 				return annotation.getType();
 			}
 
-			@Override
 			public boolean isMultiLine( Annotation annotation ) {
 				return true;
 			}
 
-			@Override
 			public boolean isTemporary( Annotation annotation ) {
 				return true;
 			}

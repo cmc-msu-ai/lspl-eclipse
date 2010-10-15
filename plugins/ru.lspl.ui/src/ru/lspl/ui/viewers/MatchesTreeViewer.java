@@ -51,7 +51,6 @@ public class MatchesTreeViewer extends TreeViewer {
 	private void initialize() {
 		addDoubleClickListener( new IDoubleClickListener() {
 
-			@Override
 			public void doubleClick( DoubleClickEvent ev ) {
 				Iterator<?> iter = ((IStructuredSelection) ev.getSelection()).iterator();
 

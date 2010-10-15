@@ -52,16 +52,13 @@ public class WordsView extends AbstractDocumentViewPart {
 
 	private final IAnalysisListener analysisListener = new IAnalysisListener() {
 
-		@Override
 		public void analysisRequired( ILsplDocument doc ) {
 			wordsViewer.refresh();
 		}
 
-		@Override
 		public void analysisStarted( ILsplDocument doc ) {
 		}
 
-		@Override
 		public void analysisCompleted( ILsplDocument doc ) {
 			wordsViewer.refresh();
 		}
@@ -127,7 +124,6 @@ public class WordsView extends AbstractDocumentViewPart {
 		speechPartViewer.setSelection( new StructuredSelection( SpeechPart.ANY ) );
 		speechPartViewer.addSelectionChangedListener( new ISelectionChangedListener() {
 
-			@Override
 			public void selectionChanged( SelectionChangedEvent ev ) {
 				IStructuredSelection sel = (IStructuredSelection) ev.getSelection();
 
@@ -149,7 +145,6 @@ public class WordsView extends AbstractDocumentViewPart {
 		wordsViewer.setLabelProvider( new TextWordsLabelProvider() );
 		wordsViewer.addSelectionChangedListener( new ISelectionChangedListener() {
 
-			@Override
 			public void selectionChanged( SelectionChangedEvent ev ) {
 				Iterator<?> iter = ((IStructuredSelection) ev.getSelection()).iterator();
 
@@ -168,7 +163,6 @@ public class WordsView extends AbstractDocumentViewPart {
 		} );
 		wordsViewer.addDoubleClickListener( new IDoubleClickListener() {
 
-			@Override
 			public void doubleClick( DoubleClickEvent ev ) {
 				Iterator<?> iter = ((IStructuredSelection) ev.getSelection()).iterator();
 

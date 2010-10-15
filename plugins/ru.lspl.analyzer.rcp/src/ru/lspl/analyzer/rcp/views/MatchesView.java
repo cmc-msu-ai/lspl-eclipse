@@ -40,16 +40,13 @@ public class MatchesView extends AbstractDocumentViewPart {
 
 	private final IAnalysisListener documentListener = new IAnalysisListener() {
 
-		@Override
 		public void analysisRequired( ILsplDocument doc ) {
 			matchesViewer.refresh();
 		}
 
-		@Override
 		public void analysisStarted( ILsplDocument doc ) {
 		}
 
-		@Override
 		public void analysisCompleted( ILsplDocument doc ) {
 			matchesViewer.refresh();
 		}
@@ -58,18 +55,15 @@ public class MatchesView extends AbstractDocumentViewPart {
 
 	private final IPatternsViewerListener patternsViewListener = new IPatternsViewerListener() {
 
-		@Override
 		public void patternSelect( Pattern pattern ) {
 			matchesViewer.setInput( pattern );
 		}
 
-		@Override
 		public void patternDoubleClick( Pattern pattern ) {
 			// TODO Auto-generated method stub
 
 		}
 
-		@Override
 		public void patternChecked( Pattern pattern, boolean checked, Set<Pattern> checkedPatterns ) {
 			// TODO Auto-generated method stub
 

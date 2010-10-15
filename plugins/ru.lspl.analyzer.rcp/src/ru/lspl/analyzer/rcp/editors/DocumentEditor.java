@@ -45,7 +45,6 @@ public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 		createTextEditorPage();
 	}
 
-	@Override
 	public void gotoMarker( IMarker marker ) {
 		setActivePage( 0 );
 		IDE.gotoMarker( getEditor( 0 ), marker );
@@ -58,17 +57,14 @@ public class DocumentEditor extends MultiPageEditorPart implements IGotoMarker {
 
 		((DocumentEditorInput) editorInput).getDocument().addAnalysisListener( new IAnalysisListener() {
 
-			@Override
 			public void analysisRequired( ILsplDocument doc ) {
 				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
 			}
 
-			@Override
 			public void analysisStarted( ILsplDocument doc ) {
 				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
 			}
 
-			@Override
 			public void analysisCompleted( ILsplDocument doc ) {
 				((IEvaluationService) site.getService( IEvaluationService.class )).requestEvaluation( "ru.lspl.analyzer.rcp.analysisNeeded" );
 			}

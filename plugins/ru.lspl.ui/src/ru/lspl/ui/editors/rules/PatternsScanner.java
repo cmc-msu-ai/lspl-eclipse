@@ -64,6 +64,6 @@ public class PatternsScanner extends RuleBasedScanner {
 
 	protected Token createToken( RGB color, int fontStyle ) {
 		return new Token(
-				new TextAttribute( manager.getColor( color ), null, 0, manager.getFont( new FontData( fontData.name, (int) fontData.height, fontData.style | fontStyle ) ) ) );
+				new TextAttribute( manager.getColor( color ), null, 0, manager.getFont( new FontData( fontData.getName(), (int) fontData.height, fontData.getStyle() | fontStyle ) ) ) );
 	}
 }

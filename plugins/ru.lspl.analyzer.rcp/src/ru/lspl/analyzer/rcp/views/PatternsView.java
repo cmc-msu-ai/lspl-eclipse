@@ -120,13 +120,11 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 		patternsViewer.setSorter( new ViewerSorter() );
 		patternsViewer.addPatternListener( new IPatternsViewerListener() {
 
-			@Override
 			public void patternSelect( Pattern pattern ) {
 				// TODO Auto-generated method stub
 
 			}
 
-			@Override
 			public void patternDoubleClick( Pattern pattern ) {
 				try {
 					((MatchesView) getSite().getPage().showView( MatchesView.ID )).selectPattern( pattern );
@@ -135,7 +133,6 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 				}
 			}
 
-			@Override
 			public void patternChecked( Pattern pattern, boolean checked, Set<Pattern> checkedPatterns ) {
 				if ( isConnected() )
 					getDocumentAnnotationModel().setSelectedPatterns( checkedPatterns );
@@ -197,21 +194,17 @@ public class PatternsView extends AbstractDocumentViewPart implements IAnalysisL
 		patternsViewer.getControl().setFocus();
 	}
 
-	@Override
 	public void analysisRequired( ILsplDocument doc ) {
 		patternsViewer.refresh();
 	}
 
-	@Override
 	public void analysisStarted( ILsplDocument doc ) {
 	}
 
-	@Override
 	public void analysisCompleted( ILsplDocument doc ) {
 		patternsViewer.refresh();
 	}
 
-	@Override
 	public void patternsUpdated( ILsplPatternSet patterns ) {
 		patternsViewer.refresh();
 	}

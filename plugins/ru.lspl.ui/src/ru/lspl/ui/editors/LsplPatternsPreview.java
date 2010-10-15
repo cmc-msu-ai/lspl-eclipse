@@ -161,16 +161,13 @@ public class LsplPatternsPreview extends EditorPart {
 		patternsViewer.setSorter( new ViewerSorter() );
 		patternsViewer.addPatternListener( new IPatternsViewerListener() {
 
-			@Override
 			public void patternSelect( Pattern pattern ) {
 				matchesViewer.setInput( pattern );
 			}
 
-			@Override
 			public void patternDoubleClick( Pattern pattern ) {
 			}
 
-			@Override
 			public void patternChecked( Pattern pattern, boolean checked, Set<Pattern> checkedPatterns ) {
 				textDocumentAnnotationModel.setSelectedPatterns( checkedPatterns );
 			}

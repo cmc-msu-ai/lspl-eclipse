@@ -8,7 +8,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public abstract class AbstractActivePageHandler extends AbstractHandler {
 
-	@Override
 	public Object execute( ExecutionEvent event ) throws ExecutionException {
 		return execute( event, HandlerUtil.getActiveWorkbenchWindow( event ).getActivePage() );
 	}

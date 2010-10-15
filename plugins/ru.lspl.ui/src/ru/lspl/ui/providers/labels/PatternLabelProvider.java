@@ -23,7 +23,6 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 	private static final int COLUMN_MATCHES = 2;
 	private static final int COLUMN_VARIANTS = 3;
 
-	@Override
 	public String getColumnText( Object obj, int column ) {
 		switch ( column ) {
 		case COLUMN_PATTERN:
@@ -96,7 +95,6 @@ public class PatternLabelProvider extends BaseLabelProvider implements ITableLab
 		return "";
 	}
 
-	@Override
 	public Image getColumnImage( Object arg0, int arg1 ) {
 		return null;
 	}

@@ -41,12 +41,10 @@ public class LsplCore implements BundleActivator {
 		return new Path( config.getNativeLibraryPath() );
 	}
 
-	@Override
 	public void start( BundleContext context ) throws Exception {
 		LsplObject.setRml( LsplCore.getConfig().getDataPath() );
 	}
 
-	@Override
 	public void stop( BundleContext context ) throws Exception {
 	}
 

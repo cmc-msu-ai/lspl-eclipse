@@ -95,12 +95,10 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		return (configChanged && config.analyzeOnConfigChange) || (textChanged && config.analyzeOnTextChange) || (patternsChanged && config.analyzeOnPatternsChange);
 	}
 
-	@Override
 	public LsplPatternSet getPatterns() {
 		return patternSet;
 	}
 
-	@Override
 	public List<Match> getMatches( Iterable<Pattern> patterns ) {
 		if ( analyzedText == null )
 			return null;
@@ -117,7 +115,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		return matches;
 	}
 
-	@Override
 	public List<Match> getMatches( Pattern pattern ) {
 		if ( analyzedText != null && analyzedPatterns.contains( pattern ) )
 			return analyzedText.getMatches( pattern );
@@ -125,7 +122,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		return null;
 	}
 
-	@Override
 	public List<MatchGroup> getMatchGroups( Iterable<Pattern> patterns ) {
 		if ( analyzedText == null )
 			return null;
@@ -153,7 +149,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		return matchGroups != null ? matchGroups : Collections.<MatchGroup> emptyList();
 	}
 
-	@Override
 	public List<MatchGroup> getMatchGroups( Pattern pattern ) {
 		SoftReference<List<MatchGroup>> groupsRef = matchGroupCache.get( pattern ); // Get reference from cache
 		List<MatchGroup> groups = groupsRef != null ? groupsRef.get() : null; // Get reference value
@@ -172,7 +167,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		return groups;
 	}
 
-	@Override
 	public List<Match> findMatchesContainingPosition( int offset ) {
 		if ( analyzedText != null )
 			return analyzedText.findMatchesContainingPosition( offset );
@@ -180,7 +174,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		return Collections.emptyList();
 	}
 
-	@Override
 	public List<Word> findWordsContainingPosition( int offset ) {
 		if ( analyzedText != null )
 			return analyzedText.findWordsContainingPosition( offset );
@@ -188,7 +181,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		return Collections.emptyList();
 	}
 
-	@Override
 	public List<Transition> findTransitionsContainingPosition( int offset ) {
 		if ( analyzedText != null )
 			return analyzedText.findTransitionsContainingPosition( offset );
@@ -196,7 +188,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		return Collections.emptyList();
 	}
 
-	@Override
 	public List<Node> getNodes() {
 		return analyzedText == null ? null : analyzedText.getNodes();
 	}
@@ -228,7 +219,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 
 		Display.getDefault().asyncExec( new Runnable() {
 
-			@Override
 			public void run() {
 				fireAnalysisStarted();
 			}
@@ -256,7 +246,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 
 		Display.getDefault().asyncExec( new Runnable() {
 
-			@Override
 			public void run() {
 				fireAnalysisCompleted();
 			}
@@ -264,12 +253,10 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 		} );
 	}
 
-	@Override
 	public void addAnalysisListener( IAnalysisListener listener ) {
 		analysisListeners.add( listener );
 	}
 
-	@Override
 	public void removeAnalysisListener( IAnalysisListener listener ) {
 		analysisListeners.remove( listener );
 	}
@@ -302,7 +289,6 @@ public class LsplDocument extends Document implements ILsplDocument, IPatternLis
 			listener.analysisCompleted( this );
 	}
 
-	@Override
 	public void patternsUpdated( ILsplPatternSet patterns ) {
 		patternsChanged = true;
 

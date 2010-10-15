@@ -61,11 +61,9 @@ public class PatternsTreeViewer extends CheckboxTreeViewer {
 	private void initialize() {
 		addTreeListener( new ITreeViewerListener() {
 
-			@Override
 			public void treeCollapsed( TreeExpansionEvent ev ) {
 			}
 
-			@Override
 			public void treeExpanded( TreeExpansionEvent ev ) {
 				Object element = ev.getElement();
 
@@ -78,7 +76,6 @@ public class PatternsTreeViewer extends CheckboxTreeViewer {
 
 		addCheckStateListener( new ICheckStateListener() {
 
-			@Override
 			public void checkStateChanged( CheckStateChangedEvent ev ) {
 				Object element = ev.getElement();
 				Object pattern;
@@ -109,7 +106,6 @@ public class PatternsTreeViewer extends CheckboxTreeViewer {
 
 		addDoubleClickListener( new IDoubleClickListener() {
 
-			@Override
 			public void doubleClick( DoubleClickEvent ev ) {
 				for ( Object obj : ((IStructuredSelection) ev.getSelection()).toArray() ) {
 					if ( obj instanceof Pattern ) {
@@ -122,7 +118,6 @@ public class PatternsTreeViewer extends CheckboxTreeViewer {
 
 		addSelectionChangedListener( new ISelectionChangedListener() {
 
-			@Override
 			public void selectionChanged( SelectionChangedEvent ev ) {
 				for ( Object obj : ((IStructuredSelection) ev.getSelection()).toArray() ) {
 					if ( obj instanceof Pattern ) {

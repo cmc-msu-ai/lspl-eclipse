@@ -47,7 +47,6 @@ public abstract class AbstractDocumentViewPart extends ViewPart implements IPart
 		return document != null;
 	}
 
-	@Override
 	public void partActivated( IWorkbenchPart part ) {
 		if ( part == null || !(part instanceof IEditorPart) )
 			return;
@@ -66,21 +65,17 @@ public abstract class AbstractDocumentViewPart extends ViewPart implements IPart
 		connect( editorPart, (DocumentEditorInput) editorPart.getEditorInput() );
 	}
 
-	@Override
 	public void partBroughtToTop( IWorkbenchPart part ) {
 	}
 
-	@Override
 	public void partClosed( IWorkbenchPart part ) {
 		if ( part == editor && isConnected() )
 			disconnect();
 	}
 
-	@Override
 	public void partDeactivated( IWorkbenchPart part ) {
 	}
 
-	@Override
 	public void partOpened( IWorkbenchPart part ) {
 	}
 

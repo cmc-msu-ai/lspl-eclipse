@@ -21,7 +21,6 @@ public class DocumentEditorPreferencePage extends FieldEditorPreferencePage impl
 				{ "MouseMove", "MOVE" } }, getFieldEditorParent() ) );
 	}
 
-	@Override
 	public void init( IWorkbench workbench ) {
 	}
 

@@ -12,7 +12,6 @@ public class MatchRangeBuilder {
 
 	private static final Comparator<Match> startOffsetComparator = new Comparator<Match>() {
 
-		@Override
 		public int compare( Match o1, Match o2 ) {
 			return o1.start.endOffset - o2.start.endOffset;
 		}

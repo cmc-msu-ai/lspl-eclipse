@@ -23,7 +23,6 @@ public class TextWordsContentProvider extends SimpleContentProvider implements I
 		speechPart = sp;
 	}
 
-	@Override
 	public Object[] getChildren( Object obj ) {
 		if ( obj instanceof Node ) {
 			ArrayList<Object> words = new ArrayList<Object>();
@@ -46,7 +45,6 @@ public class TextWordsContentProvider extends SimpleContentProvider implements I
 		}
 	}
 
-	@Override
 	public Object getParent( Object obj ) {
 		if ( obj instanceof Transition )
 			return ((Transition) obj).start;
@@ -54,7 +52,6 @@ public class TextWordsContentProvider extends SimpleContentProvider implements I
 		return null;
 	}
 
-	@Override
 	public boolean hasChildren( Object obj ) {
 		if ( obj instanceof ILsplDocument )
 			return true;

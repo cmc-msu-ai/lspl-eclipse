@@ -52,12 +52,10 @@ public class LsplPatternSet extends AbstractList<Pattern> implements ILsplPatter
 		return patternBuilder.definedPatterns;
 	}
 
-	@Override
 	public void addPatternListener( IPatternListener listener ) {
 		patternListeners.add( listener );
 	}
 
-	@Override
 	public void removePatternListener( IPatternListener listener ) {
 		patternListeners.remove( listener );
 	}
@@ -136,7 +134,6 @@ public class LsplPatternSet extends AbstractList<Pattern> implements ILsplPatter
 				} catch ( final PatternBuildingException e ) {
 					Display.getDefault().asyncExec( new Runnable() {
 
-						@Override
 						public void run() {
 							MessageBox mb = new MessageBox( PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OK | SWT.ICON_ERROR );
 							mb.setText( "Ошибка компиляции шаблона" );
@@ -157,7 +154,6 @@ public class LsplPatternSet extends AbstractList<Pattern> implements ILsplPatter
 		if ( notifyUpdate ) {
 			Display.getDefault().asyncExec( new Runnable() {
 
-				@Override
 				public void run() {
 					firePatternsUpdated();
 				}

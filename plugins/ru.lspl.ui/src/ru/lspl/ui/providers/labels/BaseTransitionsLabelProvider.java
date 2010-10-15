@@ -17,13 +17,11 @@ public abstract class BaseTransitionsLabelProvider extends BaseLabelProvider imp
 	protected static final int COLUMN_CONTEXT = 1;
 	protected static final int COLUMN_PARAMS = 2;
 
-	@Override
 	public Image getColumnImage( Object arg0, int arg1 ) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public String getColumnText( Object obj, int column ) {
 		switch ( column ) {
 		case COLUMN_MAIN:
