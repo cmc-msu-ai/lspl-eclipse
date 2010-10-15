@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Lspl Analyzer" uid="ru.lspl.analyzer.rcp.product" id="ru.lspl.analyzer.rcp.product" application="ru.lspl.analyzer.rcp.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
+<product name="Lspl Analyzer" uid="ru.lspl.analyzer.rcp.product" id="ru.lspl.analyzer.rcp.product" application="ru.lspl.analyzer.rcp.application" version="1.0.1" useFeatures="false" includeLaunchers="true">
+
+   <aboutInfo>
+      <text>
+         Lspl Analyzer RCP
+      </text>
+   </aboutInfo>
 
    <configIni use="default">
    </configIni>
@@ -9,6 +15,21 @@
    <launcherArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
+
+   <windowImages/>
+
+
+   <launcher name="lspl-analyzer">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+   </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>

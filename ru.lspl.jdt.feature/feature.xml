@@ -2,9 +2,9 @@
 <feature
       id="ru.lspl.jdt.feature"
       label="Lspl JDT Integration"
-      version="1.0.0.qualifier"
-      os="linux"
-      arch="x86_64">
+      version="1.0.1.qualifier"
+      os="linux,win32"
+      arch="x86,x86_64">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -41,9 +41,18 @@
 
    <plugin
          id="ru.lspl.ui"
+         os="linux,win32"
+         arch="x86,x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="ru.lspl.core.win32.x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
 
 </feature>

@@ -169,6 +169,11 @@
                   label="%command.label.8"
                   style="push">
             </command>
+            <command
+                  commandId="org.eclipse.ui.help.aboutAction"
+                  label="About"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution
@@ -282,6 +287,10 @@
          <property
                name="appName"
                value="Lspl Analyzer">
+         </property>
+         <property
+               name="aboutText"
+               value="Lspl Analyzer RCP">
          </property>
       </product>
    </extension>
