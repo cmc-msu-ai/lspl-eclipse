@@ -3,9 +3,9 @@ Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86_64))
 Eclipse-BundleShape: dir
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
-Bundle-SymbolicName: ru.lspl.core.linux.x86_64
+Bundle-SymbolicName: ru.lspl.core.linux.x86_64;singleton:=true
 Bundle-Version: 1.0.1.qualifier
-Fragment-Host: ru.lspl.core;bundle-version="1.0.0"
+Fragment-Host: ru.lspl.core;bundle-version="1.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0"
 Export-Package: ru.lspl.core

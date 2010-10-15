@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="ru.lspl.jdt.feature"
-      label="Lspl JDT Integration"
-      version="1.0.1.qualifier">
+      id="ru.lspl.core.feature"
+      label="Lspl Core Libraries"
+      version="1.0.1.qualifier"
+      os="linux,win32"
+      arch="x86,x86_64">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -16,22 +18,29 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import feature="ru.lspl.core.feature" version="1.0.1.qualifier" match="compatible"/>
-   </requires>
-
    <plugin
-         id="ru.lspl.jdt"
+         id="ru.lspl.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="ru.lspl.ui"
+         id="ru.lspl.core.linux.x86_64"
+         os="linux"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         fragment="true"/>
+
+   <plugin
+         id="ru.lspl.core.win32.x86"
+         os="win32"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
 
 </feature>

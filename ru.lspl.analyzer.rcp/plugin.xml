@@ -171,7 +171,7 @@
             </command>
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
-                  label="About"
+                  label="%command.label.10"
                   style="push">
             </command>
          </menu>
