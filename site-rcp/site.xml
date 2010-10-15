@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Lspl RCP Update Site" url="http://update.lspl.ru/3.6-rcp/">
+      Update site for Lspl RCP
+   </description>
+   <feature url="features/ru.lspl.analyzer.rcp.feature_1.0.1.qualifier.jar" id="ru.lspl.analyzer.rcp.feature" version="1.0.1.qualifier">
+      <category name="ru.lspl.rcp"/>
+   </feature>
+   <category-def name="ru.lspl.rcp" label="Lspl RCP"/>
+</site>

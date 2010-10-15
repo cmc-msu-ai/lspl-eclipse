@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Lspl Update Site" url="http://update.lspl.ru/3.6/">
+      Update site for Lspl Eclipse plugins
+   </description>
+   <feature url="features/ru.lspl.core.feature_1.0.1.qualifier.jar" id="ru.lspl.core.feature" version="1.0.1.qualifier">
+      <category name="ru.lspl"/>
+   </feature>
+   <feature url="features/ru.lspl.jdt.feature_1.0.1.qualifier.jar" id="ru.lspl.jdt.feature" version="1.0.1.qualifier">
+      <category name="ru.lspl"/>
+   </feature>
+   <category-def name="ru.lspl" label="Lspl Library"/>
+</site>

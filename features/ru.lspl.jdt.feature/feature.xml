@@ -17,7 +17,7 @@
    </license>
 
    <requires>
-      <import feature="ru.lspl.core.feature" version="1.0.1.qualifier" match="compatible"/>
+      <import feature="ru.lspl.core.feature" version="1.0.1.qualifier"/>
    </requires>
 
    <plugin
