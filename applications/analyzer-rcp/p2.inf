@@ -1,0 +1,3 @@
+instructions.configure=\
+  addRepository(type:0,location:http${#58}//update.lspl.ru/3.6);\
+  addRepository(type:1,location:http${#58}//update.lspl.ru/3.6);

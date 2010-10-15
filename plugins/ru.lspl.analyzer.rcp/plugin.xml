@@ -97,7 +97,7 @@
             allPopups="false"
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
-               id="fileMenu"
+               id="file"
                label="%menu.label"
                mnemonic="%menu.mnemonic">
             <command
@@ -161,7 +161,7 @@
             </command>
          </menu>
          <menu
-               id="windowMenu"
+               id="window"
                label="%menu.label.1"
                mnemonic="%menu.mnemonic.1">
             <command
@@ -172,6 +172,12 @@
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
                   label="%command.label.10"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.equinox.p2.ui.sdk.update"
+                  label="Check for Updates"
+                  mnemonic="U"
                   style="push">
             </command>
          </menu>
