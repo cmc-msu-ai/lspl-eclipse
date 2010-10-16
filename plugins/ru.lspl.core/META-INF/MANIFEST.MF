@@ -13,7 +13,7 @@ Export-Package: ru.lspl,
  ru.lspl.text.attributes,
  ru.lspl.transforms,
  ru.lspl.utils
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Activator: ru.lspl.core.LsplCore
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0"

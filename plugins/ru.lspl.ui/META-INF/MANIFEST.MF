@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;bundle-version="3.6.0",
  ru.lspl.core;bundle-version="1.0.1"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: ru.lspl.ui,
  ru.lspl.ui.editors,
  ru.lspl.ui.editors.rules,

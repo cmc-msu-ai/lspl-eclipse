@@ -6,6 +6,6 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: ru.lspl.core.linux.x86_64;singleton:=true
 Bundle-Version: 1.0.1.qualifier
 Fragment-Host: ru.lspl.core;bundle-version="1.0.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0"
 Export-Package: ru.lspl.core
