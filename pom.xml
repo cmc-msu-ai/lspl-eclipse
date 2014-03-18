@@ -8,7 +8,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tychoVersion>0.8.0</tychoVersion>
+		<tychoVersion>0.10.0</tychoVersion>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<build>
@@ -26,74 +27,35 @@
 				<version>${tychoVersion}</version>
 				<configuration>
 					<resolver>p2</resolver>
+					<target>
+						<artifact>
+							<groupId>ru.lspl</groupId>
+							<artifactId>target-definition</artifactId>
+							<version>1.0.0-SNAPSHOT</version>
+							<classifier>helios</classifier>
+						</artifact>
+					</target>
+					<ignoreTychoRepositories>true</ignoreTychoRepositories>
 					<environments>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
 							<arch>x86_64</arch>
 						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
 					</environments>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.sonatype.tycho</groupId>
-				<artifactId>maven-osgi-test-plugin</artifactId>
-				<version>${tychoVersion}</version>
-				<configuration>
-					<useUIHarness>true</useUIHarness>
-					<useUIThread>true</useUIThread>
 				</configuration>
 			</plugin>
 
 		</plugins>
 	</build>
 
-	<repositories>
-		<repository>
-			<id>helios</id>
-			<url>http://download.eclipse.org/releases/helios/</url>
-			<layout>p2</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>eclipse36</id>
-			<url>http://download.eclipse.org/eclipse/updates/3.6/</url>
-			<layout>p2</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>tycho</id>
-			<url>http://repository.sonatype.org/content/repositories/all-001/
-			</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<modules>
+		<module>target-definition</module>
 		<module>plugins</module>
 		<module>features</module>
 		<module>site</module>

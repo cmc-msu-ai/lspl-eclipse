@@ -11,13 +11,14 @@
 	<groupId>ru.lspl</groupId>
 	<artifactId>analyzer-rcp</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
-	<packaging>eclipse-application</packaging>
+	<packaging>eclipse-repository</packaging>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.sonatype.tycho</groupId>
 				<artifactId>maven-osgi-packaging-plugin</artifactId>
+				<version>${tychoVersion}</version>
 				<configuration>
 					<environments>
 						<environment>
@@ -31,6 +32,42 @@
 							<arch>x86</arch>
 						</environment>
 					</environments>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.tycho</groupId>
+				<artifactId>tycho-p2-publisher-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<configuration>
+					<publishArtifacts>true</publishArtifacts>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.tycho</groupId>
+				<artifactId>tycho-p2-director-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<executions>
+					<execution>
+						<id>materialize-products</id>
+						<goals>
+							<goal>materialize-products</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>archive-products</id>
+						<goals>
+							<goal>archive-products</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<products>
+						<product>
+							<id>analyzer-rcp.product</id>
+						</product>
+					</products>
 				</configuration>
 			</plugin>
 		</plugins>
